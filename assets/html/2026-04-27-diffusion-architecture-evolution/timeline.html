@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffusion Model Timeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .timeline-container {
+            padding: 30px 40px;
+            min-width: 100%;
+            position: relative;
+            color: #1f2933;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+            color: #1f2933;
+        }
+
+        .subtitle {
+            color: #52606d;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #52606d;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid rgba(15, 23, 42, 0.08);
+        }
+
+        .legend-color.type-unet {
+            background: #bfdbfe;
+        }
+
+        .legend-color.type-dit {
+            background: #bbf7d0;
+        }
+
+        .legend-color.type-non-text {
+            background: #ffffff;
+        }
+
+        .timeline-svg {
+            width: 100%;
+            height: auto;
+            min-height: 1200px;
+            display: block;
+        }
+
+        .year-label {
+            font-size: 14px;
+            font-weight: 600;
+            fill: #334155;
+        }
+
+        .main-path {
+            fill: none;
+            stroke: #94a3b8;
+            stroke-width: 3;
+            stroke-linecap: round;
+        }
+
+        .connector-line {
+            fill: none;
+            stroke: #cbd5e1;
+            stroke-width: 1.5;
+        }
+
+        .model-box {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .model-box:hover .model-rect {
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+            transform: translateY(-2px);
+        }
+
+        .model-rect {
+            stroke: rgba(15, 23, 42, 0.2);
+            stroke-width: 1.5;
+            rx: 6;
+            transition: all 0.2s ease;
+        }
+
+        .model-rect.type-unet {
+            fill: #bfdbfe;
+        }
+
+        .model-rect.type-dit {
+            fill: #bbf7d0;
+        }
+
+        .model-rect.type-non-text {
+            fill: #ffffff;
+            stroke: rgba(15, 23, 42, 0.4);
+            stroke-width: 2;
+        }
+
+        .model-name {
+            font-size: 12px;
+            font-weight: 500;
+            fill: #0f172a;
+            pointer-events: none;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: rgba(15, 23, 42, 0.95);
+            color: white;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            max-width: 280px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip-row {
+            margin-bottom: 6px;
+        }
+
+        .tooltip-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .tooltip-label {
+            font-weight: 600;
+            color: #93c5fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="timeline-container">
+        <h1>Diffusion Model Architecture Timeline</h1>
+        <p class="subtitle">Interactive vertical timeline showing the evolution of open-released image diffusion models (2019-2025)</p>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color type-non-text"></div>
+                <span>Non-text conditioned models</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color type-unet"></div>
+                <span>U-Net text-to-image models</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color type-dit"></div>
+                <span>DiT text-to-image models</span>
+            </div>
+        </div>
+
+        <svg class="timeline-svg" id="timeline-svg"></svg>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const models = [
+            // Non-text conditioned models
+            { name: "NCSN", date: "2019-07-17", type: "non-text" },
+            { name: "NCSNv2", date: "2020-06-19", type: "non-text" },
+            { name: "DDPM", date: "2020-06-21", type: "non-text" },
+            { name: "SDE", date: "2021-02-09", type: "non-text" },
+            { name: "IDDPM", date: "2021-02-20", type: "non-text" },
+            { name: "ADM", date: "2021-05-11", type: "non-text" },
+            { name: "EDM", date: "2021-10-10", type: "non-text" },
+            // U-Net text-to-image models
+            { name: "SD v2.1", date: "2022-12-07", type: "unet" },
+            { name: "Kandinsky", date: "2023-01-01", type: "unet" },
+            { name: "UniDiffuser", date: "2023-05-12", type: "unet" },
+            { name: "SDXL", date: "2023-06-25", type: "unet" },
+            { name: "Kandinsky 3", date: "2023-12-11", type: "unet" },
+            { name: "Stable Cascade", date: "2024-02-07", type: "unet" },
+            // Non-text conditioned DiT models
+            { name: "DiT", date: "2023-03-17", type: "non-text" },
+            { name: "U-ViT", date: "2023-06-22", type: "non-text" },
+            { name: "U-DiT", date: "2025-05-30", type: "non-text" },
+            // DiT text-to-image models
+            { name: "PixArt-α", date: "2023-10-06", type: "dit" },
+            { name: "Lumina-T2I", date: "2024-04-01", type: "dit" },
+            { name: "PixArt-Σ", date: "2024-04-11", type: "dit" },
+            { name: "Lumina-Next-T2I", date: "2024-05-12", type: "dit" },
+            { name: "SD3", date: "2024-06-12", type: "dit" },
+            { name: "Flux.1-Dev", date: "2024-08-02", type: "dit" },
+            { name: "CogView3-Plus-2B", date: "2024-10-13", type: "dit" },
+            { name: "HunyuanDiT", date: "2024-12-01", type: "dit" },
+            { name: "LiT", date: "2024-12-15", type: "non-text" },
+            { name: "SANA", date: "2025-01-11", type: "dit" },
+            { name: "Lumina-Image 2.0", date: "2025-01-22", type: "dit" },
+            { name: "SANA 1.5", date: "2025-03-21", type: "dit" },
+            { name: "HiDream-I1-Dev", date: "2025-04-06", type: "dit" },
+            { name: "CogView4-6B", date: "2025-05-03", type: "dit" },
+            { name: "Qwen-Image", date: "2025-08-04", type: "dit" }
+        ];
+
+        const sortedModels = models.map(model => ({
+            ...model,
+            displayDate: model.date === "TBD" ? "TBD" : new Date(model.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+            year: model.date === "TBD" ? 9999 : new Date(model.date).getFullYear()
+        })).sort((a, b) => {
+            if (a.date === "TBD" && b.date === "TBD") return 0;
+            if (a.date === "TBD") return 1;
+            if (b.date === "TBD") return -1;
+            return new Date(a.date) - new Date(b.date);
+        });
+
+        function createTimeline() {
+            const svg = document.getElementById('timeline-svg');
+            const svgWidth = svg.clientWidth;
+            
+            // Calculate required height based on number of models
+            const numModels = sortedModels.length;
+            const verticalSpacing = 60;
+            const topPadding = 50;
+            const bottomPadding = 50;
+            const svgHeight = topPadding + (numModels * verticalSpacing) + bottomPadding;
+            
+            svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
+            svg.style.height = `${svgHeight}px`;
+
+            const timelineX = svgWidth / 2;
+            const branchWidth = 150;
+            
+            // Draw main timeline line (vertical)
+            const arrowLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            arrowLine.setAttribute('x1', timelineX);
+            arrowLine.setAttribute('y1', topPadding);
+            arrowLine.setAttribute('x2', timelineX);
+            arrowLine.setAttribute('y2', svgHeight - bottomPadding - 15);
+            arrowLine.setAttribute('class', 'main-path');
+            svg.appendChild(arrowLine);
+
+            // Draw arrowhead pointing down
+            const arrowhead = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            const arrowY = svgHeight - bottomPadding;
+            arrowhead.setAttribute('points', `${timelineX},${arrowY} ${timelineX-6},${arrowY-15} ${timelineX+6},${arrowY-15}`);
+            arrowhead.setAttribute('fill', '#94a3b8');
+            svg.appendChild(arrowhead);
+
+            // Add year markers at appropriate positions
+            const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025];
+            years.forEach(year => {
+                // Find first model of this year
+                const firstModelOfYear = sortedModels.find(m => m.year === year);
+                if (firstModelOfYear) {
+                    const modelIndex = sortedModels.indexOf(firstModelOfYear);
+                    const y = topPadding + (modelIndex * verticalSpacing);
+
+                    // Year marker circle
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', timelineX);
+                    circle.setAttribute('cy', y);
+                    circle.setAttribute('r', 5);
+                    circle.setAttribute('fill', '#94a3b8');
+                    svg.appendChild(circle);
+
+                    // Year label on the timeline
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', timelineX + 20);
+                    text.setAttribute('y', y + 4);
+                    text.setAttribute('text-anchor', 'start');
+                    text.setAttribute('class', 'year-label');
+                    text.textContent = year;
+                    svg.appendChild(text);
+                }
+            });
+
+            // Add models with vertical spacing, alternating left and right
+            sortedModels.forEach((model, index) => {
+                const y = topPadding + (index * verticalSpacing);
+                
+                // Alternate positions left and right
+                const isLeft = index % 2 === 0;
+                const direction = isLeft ? -1 : 1;
+                const modelX = timelineX + (direction * branchWidth);
+
+                // Connector line (horizontal)
+                const connectorStartX = timelineX + (direction * 8);
+                const connectorEndX = modelX - (direction * 40);
+                
+                const connector = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                connector.setAttribute('x1', connectorStartX);
+                connector.setAttribute('y1', y);
+                connector.setAttribute('x2', connectorEndX);
+                connector.setAttribute('y2', y);
+                connector.setAttribute('class', 'connector-line');
+                svg.appendChild(connector);
+
+                // Model box
+                const boxWidth = Math.max(model.name.length * 7 + 16, 80);
+                const boxHeight = 32;
+                const boxX = modelX - (isLeft ? boxWidth : 0);
+                const boxY = y - boxHeight / 2;
+
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.setAttribute('class', 'model-box');
+                group.setAttribute('data-model', JSON.stringify(model));
+
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', boxX);
+                rect.setAttribute('y', boxY);
+                rect.setAttribute('width', boxWidth);
+                rect.setAttribute('height', boxHeight);
+                rect.setAttribute('class', `model-rect type-${model.type}`);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', boxX + boxWidth / 2);
+                text.setAttribute('y', y + 4);
+                text.setAttribute('text-anchor', 'middle');
+                text.setAttribute('class', 'model-name');
+                text.textContent = model.name;
+
+                group.appendChild(rect);
+                group.appendChild(text);
+                svg.appendChild(group);
+
+                // Add hover events
+                group.addEventListener('mouseenter', (e) => showTooltip(e, model));
+                group.addEventListener('mousemove', (e) => updateTooltipPosition(e));
+                group.addEventListener('mouseleave', hideTooltip);
+            });
+        }
+
+        function showTooltip(event, model) {
+            const tooltip = document.getElementById('tooltip');
+            let typeLabel;
+            if (model.type === 'unet') {
+                typeLabel = 'U-Net text-to-image';
+            } else if (model.type === 'dit') {
+                typeLabel = 'DiT text-to-image';
+            } else {
+                typeLabel = 'Non-text conditioned';
+            }
+            
+            tooltip.innerHTML = `
+                <div class="tooltip-row"><span class="tooltip-label">Model:</span> ${model.name}</div>
+                <div class="tooltip-row"><span class="tooltip-label">Release:</span> ${model.displayDate}</div>
+                <div class="tooltip-row"><span class="tooltip-label">Type:</span> ${typeLabel}</div>
+            `;
+            
+            updateTooltipPosition(event);
+            tooltip.classList.add('show');
+        }
+
+        function updateTooltipPosition(event) {
+            const tooltip = document.getElementById('tooltip');
+            const offset = 15;
+            let x = event.clientX + offset;
+            let y = event.clientY + offset;
+
+            // Prevent tooltip from going off-screen
+            const tooltipRect = tooltip.getBoundingClientRect();
+            if (x + tooltipRect.width > window.innerWidth) {
+                x = event.clientX - tooltipRect.width - offset;
+            }
+            if (y + tooltipRect.height > window.innerHeight) {
+                y = event.clientY - tooltipRect.height - offset;
+            }
+
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+        }
+
+        function hideTooltip() {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.classList.remove('show');
+        }
+
+        // Initialize
+        window.addEventListener('load', createTimeline);
+        window.addEventListener('resize', () => {
+            const svg = document.getElementById('timeline-svg');
+            svg.innerHTML = '';
+            createTimeline();
+        });
+    </script>
+</body>
+</html>
