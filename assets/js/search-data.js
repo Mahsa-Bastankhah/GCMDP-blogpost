@@ -72,15 +72,26 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "https://iclr-blog-track.github.io/home/";
               },
-            },{id: "post-the-thermodynamic-implications-of-gpu-cooling-systems-on-transformer-model-training-efficiency-during-leap-years",
+            },{id: "post-wait-do-we-need-to-wait-revisiting-budget-forcing-for-sequential-test-time-scaling",
         
-          title: "The Thermodynamic Implications of GPU Cooling Systems on Transformer Model Training Efficiency During...",
+          title: "Wait, Do We Need to Wait? Revisiting Budget Forcing for Sequential Test-Time Scaling...",
         
-        description: "A comprehensive analysis of how the additional day in leap years affects thermal dissipation patterns in datacenter GPU arrays, with particular emphasis on the correlation between Gregorian calendar anomalies and attention mechanism convergence rates.",
+        description: "This blog revisits budget forcing, a sequential test-time scaling technique for reasoning models by controlling when it continues thinking versus when it must answer. We evaluate how well the method transfers across model types, including non-reasoning models, and whether alternative keywords work. We provide practical guidelines for using the technique.",
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/GCMDP-blogpost/blog/2026/thermodynamic-gpu-cooling-leap-years/";
+            window.location.href = "/GCMDP-blogpost/blog/2026/wait-do-we-need-to-wait/";
+          
+        },
+      },{id: "post-symbolism-outside-connectionism-inside-the-trend-of-fusing-llms-and-automatic-programs-with-symbolic-intermediate-representations",
+        
+          title: "Symbolism Outside, Connectionism Inside: The Trend of Fusing LLMs and Automatic Programs with...",
+        
+        description: "This blog introduces the trend of fusing Large Language Models (LLMs) with external symbolic programs as a new paradigm in modern and future artificial intelligence (AI). This paradigm regards LLM output as a symbolic intermediate representation (IR), which is interpreted and executed by external symbolic programs to achieve the desired behavior. We firstly review and summarize the diverse applications of this paradigm. Then we introduce the more possible usages of this paradigm, from synthesizing grounded training data to composing modular systems of specialized neural networks. Finally, we introduce the frontier of this approach: applying formal methods to automatically verify the LLM&#39;s internal reasoning processes and outputs.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/symbolic-connect/";
           
         },
       },{id: "post-getting-sac-to-work-on-a-massive-parallel-simulator-an-rl-journey-with-off-policy-algorithms",
@@ -94,6 +105,39 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/sac-massive-sim/";
           
         },
+      },{id: "post-language-as-a-window-into-the-mind-how-nlp-and-llms-advance-human-sciences",
+        
+          title: "Language as a Window Into the Mind: How NLP and LLMs Advance Human...",
+        
+        description: "Can NLP predict heroin-addiction outcomes, uncover suicide risk, or simulate (and even influence) brain activity? Could LLMs one day contribute to research worthy of a Nobel Prize for advancing our understanding of human behavior? And what role do NLP scientists play in shaping that possibility? This post explores these questions, arguing that language technologies are not just tools that support scientific work (like literature search agents, writing tools, or coding assistants), but that by treating language as a window into the human mind, NLP and LLMs can actively help researchers uncover mechanisms of human behavior, cognition, and brain function.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/nlp-for-human-sciences/";
+          
+        },
+      },{id: "post-model-misspecification-in-simulation-based-inference-recent-advances-and-open-challenges",
+        
+          title: "Model Misspecification in Simulation-Based Inference - Recent Advances and Open Challenges",
+        
+        description: "Model misspecification is a critical challenge in simulation-based inference (SBI), particularly in neural SBI methods that use simulated data to train flexible neural density estimators. These methods typically assume that simulators faithfully represent the true data-generating process, an assumption that is often violated in practice. Resulting discrepancies can make observed data effectively out-of-distribution relative to the simulations, leading to biased posterior distributions and misleading uncertainty quantification. This post reviews recent work on model misspecification in neural SBI, covering formal definitions, methods for detection and mitigation, and their underlying assumptions. It also discusses practical implications for SBI workflows and outlines open challenges for developing robust SBI methods that remain reliable in realistic, imperfectly specified applications.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/model-misspecification-in-sbi/";
+          
+        },
+      },{id: "post-do-language-models-really-learn-to-mislead-humans-via-rlhf",
+        
+          title: "Do Language Models Really Learn to Mislead Humans via RLHF?",
+        
+        description: "This post details an investigation of claims in Language Models Learn to Mislead Humans Via RLHF (ICLR 2025) that RLHF may unintentionally lead LLM agents to mislead humans (U-Sophistry). We found that the misleading behavior in the paper is the result of an unrealistic experimental setup and not of U-Sophistry, and can therefore be categorized as intentional misleading (I-Sophistry).",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/mislead-lm/";
+          
+        },
       },{id: "post-research-directions-in-multimodal-chain-of-thought-mcot-with-sketching",
         
           title: "Research Directions in Multimodal Chain-of-Thought (MCoT) with Sketching",
@@ -103,6 +147,39 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/mcot-sketching/";
+          
+        },
+      },{id: "post-from-reinforce-to-dr-grpo-a-unified-perspective-on-llm-post-training",
+        
+          title: "From REINFORCE to Dr. GRPO: A Unified Perspective on LLM Post-Training",
+        
+        description: "Recently, many reinforcement learning (RL) algorithms have been applied to improve the post-training of large language models (LLMs). In this article, we aim to provide a unified perspective on the objectives of these RL algorithms, exploring how they relate to each other through the Policy Gradient Theorem — the fundamental theorem of policy gradient methods.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/llm-post-training/";
+          
+        },
+      },{id: "post-are-dilemmas-and-conflicts-in-llm-alignment-solvable-a-view-from-priority-graph",
+        
+          title: "Are Dilemmas and Conflicts in LLM Alignment Solvable? A View from Priority Graph...",
+        
+        description: "As Large Language Models (LLMs) become more powerful and autonomous, they increasingly face conflicts and dilemmas in many scenarios. We first summarize and taxonomize these diverse conflicts. Then, we model the LLM&#39;s preferences to make different choices as a priority graph, where instructions and values are nodes, and the edges represent context-specific priorities determined by the model&#39;s output distribution. This graph reveals that a unified stable LLM alignment is very challenging, because the graph is not static in different contexts. Besides, it also reveals a potential vulnerability: priority hacking, where adversaries can craft deceptive contexts to manipulate the graph and bypass safety alignments. To counter this, we propose a runtime verification mechanism, enabling LLMs to query external sources to ground their context and resist manipulation. While this approach enhances robustness, we also acknowledge that many ethical and value dilemmas are philosophically irreducible, posing an open challenge for the future of AI alignment.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/llm-conflicts/";
+          
+        },
+      },{id: "post-justrl-scaling-a-1-5b-llm-with-a-simple-rl-recipe",
+        
+          title: "JustRL: Scaling a 1.5B LLM with a Simple RL Recipe",
+        
+        description: "Training small reasoning models with RL has become a race toward complexity, using multi-stage pipelines, dynamic schedules, and curriculum learning. We ask whether this complexity necessary? We show that JustRL, a simple recipe with fixed hyperparameters, achieves state-of-the-art performance on two different 1.5B base models (54.5% and 64.3% across 9 math benchmarks) while using 2× less compute than sophisticated approaches. The same hyperparameters transfer across both models without tuning, and training remains stable over thousands of steps without intervention. This suggests the field may be adding complexity to solve problems that disappear with a stable, scaled-up baseline.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/justrl/";
           
         },
       },{id: "post-sample-blog-post",
@@ -138,9 +215,42 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/compositionality/";
           
         },
+      },{id: "post-chunktabpfn-training-free-long-context",
+        
+          title: "ChunkTabPFN: Training-free Long Context",
+        
+        description: "Tabular foundation models struggle with large datasets due to the quadratic attention. While methods like FlashAttention promise scalability, practical challenges persist in their application to tabular foundation models. Our work resolves these hurdles, enabling efficient attention, and reveals that contrary to the eariler reports, TabPFN&#39;s performance improves with larger contexts, highlighting its inherent robustness and minimal fine-tuning needs when scaling to complex, long datasets from the TabArena benchmark.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/chunked-tabpfn/";
+          
+        },
+      },{id: "post-budget-alignment-making-models-reason-in-the-user-39-s-language",
+        
+          title: "Budget Alignment: Making Models Reason in the User&#39;s Language",
+        
+        description: "We explore a two step multilingual alignment recipe for large language models to keep reasoning and answers in the user language while preserving accuracy.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/budget-alignment/";
+          
+        },
       },{id: "post-reward-maximization-using-goal-conditioned-rl",
         
           title: "Reward maximization using Goal-conditioned RL",
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/GCMDP/";
+          
+        },
+      },{id: "post-gcmdp",
+        
+          title: "Gcmdp",
         
         description: "",
         section: "Posts",
