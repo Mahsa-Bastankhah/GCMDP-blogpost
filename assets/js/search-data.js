@@ -182,6 +182,28 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/justrl/";
           
         },
+      },{id: "post-introduction-to-stochastic-interpolants",
+        
+          title: "Introduction to Stochastic Interpolants",
+        
+        description: "Prominent generative modeling frameworks such as Flow Matching and score-based Diffusion Models establish a smooth transformation between a Gaussian distribution and a data distribution. In this blog post, we provide an introduction to the more general framework of Stochastic Interpolants, which allows one to flexibly interpolate between any two distributions and learn a velocity field to transform samples from one into samples of the other. No prior knowledge of generative models is required for this introduction.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/introduction-to-stochastic-interpolants/";
+          
+        },
+      },{id: "post-ai-fundamentals-valuing-ai-agents-amp-data-assets",
+        
+          title: "AI Fundamentals: Valuing AI Agents &amp; Data Assets",
+        
+        description: "Large Language Model (LLM) agents now read the world through managed-context pipelines, write to it via tool-calling APIs, and continuously re-wire themselves with fresh experience. Stakeholders therefore need a Generally Accepted Accounting Principles (GAAP) compatible method to price both (i) the agent&#39;s labour-like output and (ii) the data traces that fuel learning. We formalise a single unifying metric - agent Economic Value (AEV)- and demonstrate, using evidence from millions of real conversations, $1M of freelance software contracts, and 48k physician rubric points in healthcare, that these metrics are measurable today. We then extend the template to reinforcement-learning regimes in which grounded rewards equal cash flows. Lastly, we propose a financial settlement layer, which transforms the agent from a passive software user into an active economic participant.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/economic-agents/";
+          
+        },
       },{id: "post-sample-blog-post",
         
           title: "Sample Blog Post",
@@ -241,7 +263,7 @@ ninja.data = [{
         
           title: "Reward maximization using Goal-conditioned RL",
         
-        description: "",
+        description: "TODO - this is abstract",
         section: "Posts",
         handler: () => {
           
