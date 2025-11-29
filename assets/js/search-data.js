@@ -72,7 +72,18 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "https://iclr-blog-track.github.io/home/";
               },
-            },{id: "post-wait-do-we-need-to-wait-revisiting-budget-forcing-for-sequential-test-time-scaling",
+            },{id: "post-reward-maximization-using-goal-conditioned-rl",
+        
+          title: "Reward maximization using Goal-conditioned RL",
+        
+        description: "TODO - this is abstract",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/GCMDP/";
+          
+        },
+      },{id: "post-wait-do-we-need-to-wait-revisiting-budget-forcing-for-sequential-test-time-scaling",
         
           title: "Wait, Do We Need to Wait? Revisiting Budget Forcing for Sequential Test-Time Scaling...",
         
@@ -103,6 +114,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/sac-massive-sim/";
+          
+        },
+      },{id: "post-pushing-meta-continual-learning-algorithms-to-the-limit",
+        
+          title: "Pushing Meta-Continual Learning Algorithms to the Limit",
+        
+        description: "Meta-continual learning algorithms should be able to handle tasks with extended data streams compared to the traditional deep learning setting. These algorithms have not been applied to settings with extreme data streams, such as classification tasks with 1,000 classes, nor have they been compared to traditional continual learning algorithms. We compare meta-continual learning to continual learning and we find that meta-continual learning scales better than continual learning.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/pushing-meta-cl-methods/";
           
         },
       },{id: "post-language-as-a-window-into-the-mind-how-nlp-and-llms-advance-human-sciences",
@@ -136,6 +158,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/mislead-lm/";
+          
+        },
+      },{id: "post-on-the-measure-of-a-model-from-intelligence-to-generality",
+        
+          title: "On the Measure of a Model - From Intelligence to Generality",
+        
+        description: "Benchmarks like ARC, Raven-style puzzles, and the Blackbird Task are often treated as measures of LLM intelligence. But intelligence is a moving target—hard to define and even harder to link to what we actually need models to do, like answer questions, summarize text, or write code. Optimizing for these abstract tests can pull evaluation away from real-world usefulness. We argue for a shift from chasing intelligence to measuring generality. This reframes how progress in AI should be assessed and proposes generality as a more stable foundation for evaluating capability across diverse and evolving tasks.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/measuregen/";
           
         },
       },{id: "post-research-directions-in-multimodal-chain-of-thought-mcot-with-sketching",
@@ -191,6 +224,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/introduction-to-stochastic-interpolants/";
+          
+        },
+      },{id: "post-evalcards-for-standardized-evaluation-reporting",
+        
+          title: "EvalCards for Standardized Evaluation Reporting",
+        
+        description: "In the age of rapidly released LLMs, evaluation reporting is fragmented, inconsistent, and often misleading. We surveyed the landscape and found three critical crises—reproducibility, accessibility, and governance—that Model Cards alone can&#39;t solve. Our solution? EvalCards-- lightweight, standardized evaluation summaries that are easy to write, easy to understand, and impossible to miss. EvalCards are designed to enhance transparency for both researchers and practitioners while providing a practical foundation to meet emerging governance requirements.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/evalcards/";
           
         },
       },{id: "post-ai-fundamentals-valuing-ai-agents-amp-data-assets",
@@ -257,17 +301,6 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/budget-alignment/";
-          
-        },
-      },{id: "post-reward-maximization-using-goal-conditioned-rl",
-        
-          title: "Reward maximization using Goal-conditioned RL",
-        
-        description: "TODO - this is abstract",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/GCMDP/";
           
         },
       },{id: "post-gcmdp",
