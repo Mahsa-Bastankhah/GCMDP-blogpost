@@ -40,6 +40,7 @@
   year={1993}
 }
 
+
 @inproceedings{schaul2015universal,
   title={Universal value function approximators},
   author={Schaul, Tom and Horgan, Daniel and Gregor, Karol and Silver, David},
@@ -135,3 +136,72 @@
   volume={30},
   year={2017}
 }
+
+
+@inproceedings{pmlr-v37-schaul15,
+  title = 	 {Universal Value Function Approximators},
+  author = 	 {Schaul, Tom and Horgan, Daniel and Gregor, Karol and Silver, David},
+  booktitle = 	 {Proceedings of the 32nd International Conference on Machine Learning},
+  pages = 	 {1312--1320},
+  year = 	 {2015},
+  editor = 	 {Bach, Francis and Blei, David},
+  volume = 	 {37},
+  series = 	 {Proceedings of Machine Learning Research},
+  address = 	 {Lille, France},
+  month = 	 {07--09 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {http://proceedings.mlr.press/v37/schaul15.pdf},
+  url = 	 {https://proceedings.mlr.press/v37/schaul15.html},
+  abstract = 	 {Value functions are a core component of reinforcement learning. The main idea is to to construct a single function approximator V(s; theta) that estimates the long-term reward from any state s, using parameters θ. In this paper we introduce universal value function approximators (UVFAs) V(s,g;theta) that generalise not just over states s but also over goals g. We develop an efficient technique for supervised learning of UVFAs, by factoring observed values into separate embedding vectors for state and goal, and then learning a mapping from s and g to these factored embedding vectors. We show how this technique may be incorporated into a reinforcement learning algorithm that updates the UVFA solely from observed rewards. Finally, we demonstrate that a UVFA can successfully generalise to previously unseen goals.}
+}
+@inproceedings{NIPS2017_453fadbd,
+  author = {Andrychowicz, Marcin and Wolski, Filip and Ray, Alex and Schneider, Jonas and Fong, Rachel and Welinder, Peter and McGrew, Bob and Tobin, Josh and Pieter Abbeel, OpenAI and Zaremba, Wojciech},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor = {I. Guyon and U. Von Luxburg and S. Bengio and H. Wallach and R. Fergus and S. Vishwanathan and R. Garnett},
+  pages = {},
+  publisher = {Curran Associates, Inc.},
+  title = {Hindsight Experience Replay},
+  url = {https://proceedings.neurips.cc/paper_files/paper/2017/file/453fadbd8a1a3af50a9df4df899537b5-Paper.pdf},
+  volume = {30},
+  year = {2017}
+}
+
+@misc{bertsekasNDP,
+  title={Dynamic Programming and Optimal Control},
+  author={Bertsekas, Dimitri},
+  year={2023},
+  howpublished={\url{https://web.mit.edu/dimitrib/www/NDP.pdf}}
+}
+
+@inproceedings{pathak2017curiosity,
+  title={Curiosity-driven exploration by self-supervised prediction},
+  author={Pathak, Deepak and Agrawal, Pulkit and Efros, Alexei A and Darrell, Trevor},
+  booktitle={International conference on machine learning},
+  pages={2778--2787},
+  year={2017},
+  organization={PMLR}
+}
+
+@misc{levy2019learningmultilevelhierarchieshindsight,
+  title={Learning Multi-Level Hierarchies with Hindsight}, 
+  author={Andrew Levy and George Konidaris and Robert Platt and Kate Saenko},
+  year={2019},
+  eprint={1712.00948},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  url={https://arxiv.org/abs/1712.00948}, 
+}
+@inproceedings{10.5555/3327144.3327250,
+  author = {Nachum, Ofir and Gu, Shixiang and Lee, Honglak and Levine, Sergey},
+  title = {Data-efficient hierarchical reinforcement learning},
+  year = {2018},
+  publisher = {Curran Associates Inc.},
+  address = {Red Hook, NY, USA},
+  abstract = {Hierarchical reinforcement learning (HRL) is a promising approach to extend traditional reinforcement learning (RL) methods to solve more complex tasks. Yet, the majority of current HRL methods require careful task-specific design and on-policy training, making them difficult to apply in real-world scenarios. In this paper, we study how we can develop HRL algorithms that are general, in that they do not make onerous additional assumptions beyond standard RL algorithms, and efficient, in the sense that they can be used with modest numbers of interaction samples, making them suitable for real-world problems such as robotic control. For generality, we develop a scheme where lower-level controllers are supervised with goals that are learned and proposed automatically by the higher-level controllers. To address efficiency, we propose to use off-policy experience for both higherand lower-level training. This poses a considerable challenge, since changes to the lower-level behaviors change the action space for the higher-level policy, and we introduce an off-policy correction to remedy this challenge. This allows us to take advantage of recent advances in off-policy model-free RL to learn both higher-and lower-level policies using substantially fewer environment interactions than on-policy algorithms. We term the resulting HRL agent HIRO and find that it is generally applicable and highly sample-efficient. Our experiments show that HIRO can be used to learn highly complex behaviors for simulated robots, such as pushing objects and utilizing them to reach target locations, learning from only a few million samples, equivalent to a few days of real-time interaction. In comparisons with a number of prior HRL methods, we find that our approach substantially outperforms previous state-of-the-art techniques.},
+  booktitle = {Proceedings of the 32nd International Conference on Neural Information Processing Systems},
+  pages = {3307–3317},
+  numpages = {11},
+  location = {Montr\'{e}al, Canada},
+  series = {NIPS'18}
+}
+
