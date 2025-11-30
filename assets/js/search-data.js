@@ -76,7 +76,7 @@ ninja.data = [{
         
           title: "Reward maximization using Goal-conditioned RL",
         
-        description: "TODO - this is abstract",
+        description: "Goal-conditioned reinforcement learning (GCRL) has recently demonstratedremarkable success as an unsupervised framework capable of driving strongexploratory behavior. Because reaching a goal from scratch is often harderthan maximizing a dense reward, algorithms that succeed in GCRL implicitlysolve a challenging exploration problem. This raises a natural question:can advances in GCRL be leveraged to solve sparse-reward return-maximization problems? In this work, we answer this question affirmatively.We show how to construct, from any reward-maximization MDP, an equivalentgoal-conditioned MDP in which the probability of reaching a syntheticabsorbing goal state matches the return of the original task.Consequently, running any goal-conditioned RL algorithm on this transformed MDP yields a policy that maximizes return in the original environment. We demonstrate the effectiveness of this reduction on Riverswim, a canonical hard-exploration benchmark where the agent receives a small reward near the start and a significantly larger reward only after persistent exploration. As we increase the difficulty of the exploration problem (by lengthening the river), our method’s advantage over standard reward-maximization baselines grows substantially, highlighting the practical value of leveraging GCRL for challenging sparse-reward domains.",
         section: "Posts",
         handler: () => {
           
@@ -103,6 +103,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/symbolic-connect/";
+          
+        },
+      },{id: "post-speeding-up-training-of-model-free-reinforcement-learning-a-comparative-evaluation-for-fast-and-accurate-learning",
+        
+          title: "Speeding up Training of Model-Free Reinforcement Learning :A Comparative Evaluation for Fast and...",
+        
+        description: "Reinforcement Learning (RL) represents a powerful framework for solving sequential decision-making problems in dynamic environments across diverse domains, such as control of robots or optimization of profit. However, its practical implementation requires navigating a variety of software packages, encompassing deep learning libraries (e.g., TensorFlow, PyTorch, JAX/Flax), environment frameworks (e.g., Gymnasium, Numpy), and hyperparameter optimization techniques and libraries. This post critically evaluates the common PyTorch, Gymnasium, and NumPy RL stack by comparing it to a faster alternative:JAX/Flax for both of model training and environment simulation. A Gridworld example evaluating both training speed and accuracy is utilized to test each of these packages. Additionally, we complement our example by a comprehensive tracking and monitoring of the training process using MLflow along with a thorough hyperparameters optimization via Optuna. The post concludes with a discussion of the results and final recommendations for optimal use cases of each of these packages.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/speeding-up-rl/";
           
         },
       },{id: "post-getting-sac-to-work-on-a-massive-parallel-simulator-an-rl-journey-with-off-policy-algorithms",
@@ -237,6 +248,17 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/evalcards/";
           
         },
+      },{id: "post-elastic-weight-consolidation-ewc-nuts-and-bolts",
+        
+          title: "Elastic Weight Consolidation (EWC): Nuts and Bolts",
+        
+        description: "A theoretical deep-dive into the Elastic Weight Consolidation method for continual learning, explaining the mathematical foundations and intuitions behind this influential approach to preventing catastrophic forgetting.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/elastic-weight-consolidation-nuts-bolts/";
+          
+        },
       },{id: "post-ai-fundamentals-valuing-ai-agents-amp-data-assets",
         
           title: "AI Fundamentals: Valuing AI Agents &amp; Data Assets",
@@ -301,17 +323,6 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/budget-alignment/";
-          
-        },
-      },{id: "post-gcmdp",
-        
-          title: "Gcmdp",
-        
-        description: "",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/GCMDP/";
           
         },
       },{id: "books-the-godfather",
