@@ -94,11 +94,22 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/wait-do-we-need-to-wait/";
           
         },
-      },{id: "post-symbolism-outside-connectionism-inside-the-trend-of-fusing-llms-and-automatic-programs-with-symbolic-intermediate-representations",
+      },{id: "post-tracing-the-principles-behind-modern-diffusion-models",
         
-          title: "Symbolism Outside, Connectionism Inside: The Trend of Fusing LLMs and Automatic Programs with...",
+          title: "Tracing the Principles Behind Modern Diffusion Models",
         
-        description: "This blog introduces the trend of fusing Large Language Models (LLMs) with external symbolic programs as a new paradigm in modern and future artificial intelligence (AI). This paradigm regards LLM output as a symbolic intermediate representation (IR), which is interpreted and executed by external symbolic programs to achieve the desired behavior. We firstly review and summarize the diverse applications of this paradigm. Then we introduce the more possible usages of this paradigm, from synthesizing grounded training data to composing modular systems of specialized neural networks. Finally, we introduce the frontier of this approach: applying formal methods to automatically verify the LLM&#39;s internal reasoning processes and outputs.",
+        description: "Diffusion models can feel like a jungle of acronyms, but the core idea is simple: start from noise and gradually move a cloud of samples until it looks like real data. This post gives an intuition-first tour showing that DDPMs, score-based models, and flow matching are the same recipe with different prediction targets, all rooted in the change-of-variable rule from calculus and powered by one shared “conditional trick” that turns learning into supervised regression. Finally, we zoom out to the speed problem and show how flow map models aim to replace many tiny denoising steps with a few big, accurate jumps toward real-time generation.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/tracing-principles-behind-modern-diffusion-models/";
+          
+        },
+      },{id: "post-from-dense-monoliths-to-modular-minds-the-rise-of-symbolic-routing-in-llms",
+        
+          title: "From Dense Monoliths to Modular Minds: The Rise of Symbolic Routing in LLMs...",
+        
+        description: "The history of Artificial Intelligence (AI) has largely been defined by a dichotomy: the flexible, probabilistic learning of Connectionism versus the rigorous, compositional logic of Symbolism. However, the emergence of Large Language Models (LLMs) is fostering a synthesis of these paradigms through a fundamental architectural shift: the move from Dense Monoliths to Modular, Routed Systems. This shift is fractal. At the Macro level, LLMs function as central planners, using symbolic protocols to orchestrate external tools and specialized neural agents. Simultaneously, at the Micro level, the models themselves are evolving into sparse, modular structures (such as Mixture-of-Experts) governed by internal routing mechanisms. In this post, we explore this transition toward Symbolic Routing. We discuss how this paradigm enables us to build societies of neural agents, discover latent modularity within dense networks, and leverage these structures to synthesize grounded training data and formally verify AI reasoning.",
         section: "Posts",
         handler: () => {
           
@@ -171,6 +182,17 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/mislead-lm/";
           
         },
+      },{id: "post-misalignments-and-rl-failure-modes-in-the-early-stage-of-superintelligence",
+        
+          title: "Misalignments and RL Failure Modes in the Early Stage of Superintelligence",
+        
+        description: "With the rapid ability grokking of frontier Large Models (LMs), there is growing attention and research focus on aligning them with human values and intent via large scale reinforcement learning and other techniques. However, as LMs are getting stronger and more agentic, their misalignment and deceptive behaviors are also emerging and becoming increasingly difficult for humans to pre-detect and keep track of. This blog post discusses current misalignment patterns, deceptive behaviors, RL failure modes, and emergent traits in modern large models to further AI safety discussions and advance the development of mitigation strategies for LM misbehaviors.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/misalign-failure-mode/";
+          
+        },
       },{id: "post-on-the-measure-of-a-model-from-intelligence-to-generality",
         
           title: "On the Measure of a Model - From Intelligence to Generality",
@@ -235,6 +257,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/introduction-to-stochastic-interpolants/";
+          
+        },
+      },{id: "post-from-trajectories-to-operators-a-unified-flow-map-perspective-on-generative-modeling",
+        
+          title: "From Trajectories to Operators — A Unified Flow Map Perspective on Generative Modeling...",
+        
+        description: "In this post, we reframe continuous-time generative modeling from integrating trajectories to learning two-time operators (flow maps). This operator view unifies diffusion, flow matching, and consistency models, and suggests a practical diagnostic — semigroup-consistent jumps yield both step-robust generation and low compositional drift. We derive Eulerian/Lagrangian distillation objectives and use inpainting experiments to show why semigroup-consistent jumps can be both step-robust and composition-stable.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/flow-map-learning/";
           
         },
       },{id: "post-evalcards-for-standardized-evaluation-reporting",
