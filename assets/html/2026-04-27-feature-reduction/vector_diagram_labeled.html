@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Vector Diagram</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        canvas {
+            border: 1px solid #444;
+            cursor: default;
+            display: block;
+            background: #1e1e1e;
+        }
+        .instructions {
+            margin-top: 15px;
+            padding: 10px;
+            background: #262626;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="vectorCanvas" width="600" height="600"></canvas>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('vectorCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Configuration
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const vectorLength = 150;
+        const circleRadius = 8;
+        
+        // Colors mapped to labels
+        const colorA = '#1DA37E'; // Green - Vector a
+        const colorB = '#A75F9A'; // Purple - Vector b
+        const colorC = '#AA6600'; // Orange - Vector c
+        
+        // Interactive vector angle
+        let interactiveAngle = Math.PI * 5 / 4; // Start at 225 degrees (lower left quadrant)
+        let isDragging = false;
+        
+        // Vector directions (in radians)
+        const vectorAAngle = 0; // Positive x-axis
+        const vectorBAngle = Math.PI / 2; // Positive y-axis
+        
+        function drawGrid() {
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            
+            // Vertical lines
+            for (let x = 0; x <= canvas.width; x += 50) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            // Horizontal lines
+            for (let y = 0; y <= canvas.height; y += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+        
+        function drawAxes() {
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 2;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+            
+            // Axis labels
+            ctx.fillStyle = '#aaa';
+            ctx.font = '14px Arial';
+            ctx.fillText('x', canvas.width - 20, centerY - 10);
+            ctx.fillText('y', centerX + 10, 20);
+        }
+        
+        function drawLabel(x, y, text, color) {
+            ctx.fillStyle = color;
+            ctx.font = 'bold 16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Draw background for better readability
+            const metrics = ctx.measureText(text);
+            const padding = 4;
+            ctx.fillStyle = 'rgba(30, 30, 30, 0.8)';
+            ctx.fillRect(
+                x - metrics.width / 2 - padding,
+                y - 10,
+                metrics.width + padding * 2,
+                20
+            );
+            
+            // Draw text
+            ctx.fillStyle = color;
+            ctx.fillText(text, x, y);
+        }
+        
+        function drawVector(angle, color, label, includeCircle = true) {
+            const endX = centerX + vectorLength * Math.cos(angle);
+            const endY = centerY - vectorLength * Math.sin(angle);
+            
+            // Draw vector line
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            
+            // Draw arrowhead
+            const arrowSize = 10;
+            const arrowAngle = Math.PI / 6;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(angle - arrowAngle),
+                endY + arrowSize * Math.sin(angle - arrowAngle)
+            );
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(angle + arrowAngle),
+                endY + arrowSize * Math.sin(angle + arrowAngle)
+            );
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw circle at the end with enhanced styling
+            if (includeCircle) {
+                // Add subtle shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                // Draw outer glow
+                ctx.fillStyle = color + '80'; // Semi-transparent version
+                ctx.beginPath();
+                ctx.arc(endX, endY, circleRadius + 3, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw main circle
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(endX, endY, circleRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Add white border for definition
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(endX, endY, circleRadius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Add highlight for 3D effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(endX - circleRadius * 0.3, endY - circleRadius * 0.3, circleRadius * 0.4, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+            
+            // Draw label on the vector
+            const labelDistance = vectorLength * 0.6;
+            const labelX = centerX + labelDistance * Math.cos(angle);
+            const labelY = centerY - labelDistance * Math.sin(angle);
+            drawLabel(labelX, labelY, label, color);
+            
+            return { endX, endY };
+        }
+        
+        function drawCombinationVector(angle1, angle2, colors, label) {
+            // Calculate the midpoint angle between two vectors
+            // Need to handle the case where angles wrap around (e.g., 350° and 10°)
+            let midAngle;
+            let diff = angle2 - angle1;
+            
+            // Normalize the difference to be between -π and π
+            while (diff > Math.PI) diff -= 2 * Math.PI;
+            while (diff < -Math.PI) diff += 2 * Math.PI;
+            
+            // Calculate midpoint taking the shorter arc
+            midAngle = angle1 + diff / 2;
+            
+            const endX = centerX + vectorLength * Math.cos(midAngle);
+            const endY = centerY - vectorLength * Math.sin(midAngle);
+            
+            // Draw vector line with gradient or dashed style
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw circles at the end for both colors with enhanced styling
+            colors.forEach((color, index) => {
+                const offset = (index - 0.5) * circleRadius * 1.5;
+                const perpX = -Math.sin(midAngle) * offset;
+                const perpY = -Math.cos(midAngle) * offset;
+                
+                const circleX = endX + perpX;
+                const circleY = endY + perpY;
+                const smallRadius = circleRadius * 0.8;
+                
+                // Add subtle shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                
+                // Draw outer glow
+                ctx.fillStyle = color + '80'; // Semi-transparent version
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, smallRadius + 2, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw main circle
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, smallRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Add white border for definition
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, smallRadius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Add highlight for 3D effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(circleX - smallRadius * 0.3, circleY - smallRadius * 0.3, smallRadius * 0.35, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            });
+            
+            // Draw label on the combination vector
+            const labelDistance = vectorLength * 0.6;
+            const labelX = centerX + labelDistance * Math.cos(midAngle);
+            const labelY = centerY - labelDistance * Math.sin(midAngle);
+            drawLabel(labelX, labelY, label, '#999');
+        }
+        
+        function normalizeAngle(angle) {
+            while (angle < 0) angle += 2 * Math.PI;
+            while (angle >= 2 * Math.PI) angle -= 2 * Math.PI;
+            return angle;
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            drawGrid();
+            drawAxes();
+            
+            // Draw the two base vectors
+            drawVector(vectorAAngle, colorA, 'a');
+            drawVector(vectorBAngle, colorB, 'b');
+            
+            // Draw the combination of the two base vectors (halfway between, unit length)
+            drawCombinationVector(vectorAAngle, vectorBAngle, [colorA, colorB], 'ab');
+            
+            // Draw the interactive vector
+            drawVector(interactiveAngle, colorC, 'c');
+            
+            // Draw combination between interactive vector and vector a
+            drawCombinationVector(vectorAAngle, interactiveAngle, [colorA, colorC], 'ac');
+            
+            // Draw combination between interactive vector and vector b
+            drawCombinationVector(vectorBAngle, interactiveAngle, [colorB, colorC], 'bc');
+        }
+        
+        function getMouseAngle(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            
+            const dx = mouseX - centerX;
+            const dy = centerY - mouseY; // Invert y-axis
+            
+            return Math.atan2(dy, dx);
+        }
+        
+        // Initial draw
+        draw();
+    </script>
+</body>
+</html>

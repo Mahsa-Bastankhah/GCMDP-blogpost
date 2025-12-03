@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combinations Table</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: transparent;
+            color: #f1f5f9;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #1e293b;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        thead {
+            background-color: #334155;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border-bottom: 2px solid #475569;
+        }
+
+        th:first-child {
+            text-align: left;
+            padding-left: 1.5rem;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid #334155;
+        }
+
+        td:first-child {
+            text-align: left;
+            padding-left: 1.5rem;
+            font-weight: 500;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: #334155;
+        }
+
+        .color-header {
+            width: 80px;
+        }
+
+        .color-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid #1e293b;
+        }
+
+        .color-A {
+            background-color: #0173B2;
+        }
+
+        .color-B {
+            background-color: #DE8F05;
+        }
+
+        .color-C {
+            background-color: #029E73;
+        }
+
+        .color-D {
+            background-color: #CC78BC;
+        }
+
+        .check-mark {
+            color: #10b981;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .layer-label {
+            color: #94a3b8;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-left: 0.5rem;
+        }
+
+        .combination-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .combination-circles {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .mini-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1px solid #1e293b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Combination</th>
+                    <th class="color-header">
+                        <div class="color-circle color-A"></div>
+                        <div>A</div>
+                    </th>
+                    <th class="color-header">
+                        <div class="color-circle color-B"></div>
+                        <div>B</div>
+                    </th>
+                    <th class="color-header">
+                        <div class="color-circle color-C"></div>
+                        <div>C</div>
+                    </th>
+                    <th class="color-header">
+                        <div class="color-circle color-D"></div>
+                        <div>D</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Layer 1: Base nodes -->
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                            </div>
+                            <span>A</span>
+                            <span class="layer-label">Layer 1</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-B"></div>
+                            </div>
+                            <span>B</span>
+                            <span class="layer-label">Layer 1</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-C"></div>
+                            </div>
+                            <span>C</span>
+                            <span class="layer-label">Layer 1</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>D</span>
+                            <span class="layer-label">Layer 1</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+
+                <!-- Layer 2: Pairwise combinations -->
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-B"></div>
+                            </div>
+                            <span>A∪B</span>
+                            <span class="layer-label">Layer 2</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-B"></div>
+                                <div class="mini-circle color-C"></div>
+                            </div>
+                            <span>B∪C</span>
+                            <span class="layer-label">Layer 2</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-C"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>C∪D</span>
+                            <span class="layer-label">Layer 2</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>A∪D</span>
+                            <span class="layer-label">Layer 2</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-C"></div>
+                            </div>
+                            <span>A∪C</span>
+                            <span class="layer-label">Layer 2</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-B"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>B∪D</span>
+                            <span class="layer-label">Layer 2</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+
+                <!-- Layer 3: Triple combinations -->
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-B"></div>
+                                <div class="mini-circle color-C"></div>
+                            </div>
+                            <span>A∪B∪C</span>
+                            <span class="layer-label">Layer 3</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-B"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>A∪B∪D</span>
+                            <span class="layer-label">Layer 3</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-B"></div>
+                                <div class="mini-circle color-C"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>B∪C∪D</span>
+                            <span class="layer-label">Layer 3</span>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-C"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>A∪C∪D</span>
+                            <span class="layer-label">Layer 3</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+
+                <!-- Layer 4: Complete combination -->
+                <tr>
+                    <td>
+                        <div class="combination-display">
+                            <div class="combination-circles">
+                                <div class="mini-circle color-A"></div>
+                                <div class="mini-circle color-B"></div>
+                                <div class="mini-circle color-C"></div>
+                                <div class="mini-circle color-D"></div>
+                            </div>
+                            <span>A∪B∪C∪D</span>
+                            <span class="layer-label">Layer 4</span>
+                        </div>
+                    </td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                    <td><span class="check-mark">✓</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -72,7 +72,18 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "https://iclr-blog-track.github.io/home/";
               },
-            },{id: "post-reward-maximization-using-goal-conditioned-rl",
+            },{id: "post-fans-frequency-adaptive-noise-shaping-for-diffusion-models",
+        
+          title: "FANS - Frequency-Adaptive Noise Shaping for Diffusion Models",
+        
+        description: "Diffusion models have achieved remarkable success in generative modeling, yet they often struggle with spectral bias,the tendency to prioritize low-frequency patterns while inadequately learning high-frequency details. This limitation stems from the uniform noise scheduling employed during training, which allocates equal denoising capacity across all frequencies regardless of the dataset&#39;s spectral characteristics. We introduce Frequency-Adaptive Noise Shaping (FANS), a principled framework that addresses this fundamental limitation by dynamically shaping noise distributions according to dataset-specific frequency importance. FANS operates on a simple insight - different datasets exhibit distinct spectral signatures, and noise scheduling should reflect these differences. The framework integrates seamlessly with existing diffusion architectures through a simple modification to the noise sampling procedure during training and inference.We validate FANS on synthetic datasets with controlled spectral properties as well as real world data (CIFAR10, CelebA, Texture, MultimodalUniverse) where we demonstrate consistent improvements over vanilla DDPM baselines. Our experiments reveal that FANS particularly excels on high-frequency-rich datasets, producing sharper, more detailed samples while maintaining comparable performance for standard natural image datasets like CIFAR10 and CelebA.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/fans/";
+          
+        },
+      },{id: "post-reward-maximization-using-goal-conditioned-rl",
         
           title: "Reward maximization using Goal-conditioned RL",
         
@@ -94,6 +105,50 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/wait-do-we-need-to-wait/";
           
         },
+      },{id: "post-text-to-image-compression-for-long-context-understanding",
+        
+          title: "Text-to-Image compression for long context understanding",
+        
+        description: "Humans process text through visual perception much like viewing images or videos, but current AI systems typically use different encoders and processing pipelines when handling different modalities. In this blog post, we investigate recent works that attempt a human-inspired paradigm for processing texts that is converting textual contexts into images and subsequently using visual language models (VLMs) to process them. We start by explaining technical implementations of such conversions and their strengths. We then perform evaluation on long context understanding benchmarks that are more challenging than those used in prior works, with the objective to better analyze how these methods work or fail. Finally, we implement several improvements to existing approaches, including refined conversion techniques and context preprocessing strategies before conversion to images, observing their impacts on task performance to derive insights on future research directions.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/visual-long-context/";
+          
+        },
+      },{id: "post-using-large-language-models-to-simulate-and-predict-human-decision-making",
+        
+          title: "Using Large Language Models to Simulate and Predict Human Decision-Making",
+        
+        description: "We explore how large language models can be used to predict human decisions in language-based persuasion games, comparing direct prompting, LLM-based data generation, and hybrid methods that mix synthetic and human data.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/using-large-language-models-to-simulate-and-predict-human-decision-making/";
+          
+        },
+      },{id: "post-what-and-what-not-are-calibrated-uncertainties-actually-useful-for",
+        
+          title: "What (and What Not) are Calibrated Uncertainties Actually Useful for?",
+        
+        description: "The blogpost clarifies the usefulness of having a model with calibrated probabilities, something that is not often stated in the calibration literature. I shows that a calibrated model can be relied on to estimate average loss/reward, however, good calibration does not mean that a model is useful for per-sample decision making.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/useful-calibrated-uncertainties/";
+          
+        },
+      },{id: "post-is-your-algorithm-unlearning-or-untraining",
+        
+          title: "Is your algorithm Unlearning or Untraining?",
+        
+        description: "Machine unlearning aims to post-process a trained model in order to remove the influence of specific training examples or higher-level knowledge. We argue that the term unlearning is overloaded, with different use cases belonging to distinct problem formulations. This issue causes confusion in the community: it is often unclear what the goals of different proposed methods are, when they are expected to work, how they should be evaluated, and what baselines they should be compared against. To address this, we establish a fundamental distinction between two notions that we identify as Unlearning and Untraining, aiming to guide the field towards disambiguating technical definitions, to unlock more progress in clarifying goals, designing evaluation metrics for each, and ultimately better algorithms.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/unlearning-or-untraining/";
+          
+        },
       },{id: "post-tracing-the-principles-behind-modern-diffusion-models",
         
           title: "Tracing the Principles Behind Modern Diffusion Models",
@@ -109,7 +164,7 @@ ninja.data = [{
         
           title: "From Dense Monoliths to Modular Minds: The Rise of Symbolic Routing in LLMs...",
         
-        description: "The history of Artificial Intelligence (AI) has largely been defined by a dichotomy: the flexible, probabilistic learning of Connectionism versus the rigorous, compositional logic of Symbolism. However, the emergence of Large Language Models (LLMs) is fostering a synthesis of these paradigms through a fundamental architectural shift: the move from Dense Monoliths to Modular, Routed Systems. This shift is fractal. At the Macro level, LLMs function as central planners, using symbolic protocols to orchestrate external tools and specialized neural agents. Simultaneously, at the Micro level, the models themselves are evolving into sparse, modular structures (such as Mixture-of-Experts) governed by internal routing mechanisms. In this post, we explore this transition toward Symbolic Routing. We discuss how this paradigm enables us to build societies of neural agents, discover latent modularity within dense networks, and leverage these structures to synthesize grounded training data and formally verify AI reasoning.",
+        description: "The history of Artificial Intelligence (AI) has largely been defined by a dichotomy: the flexible, probabilistic learning of Connectionism versus the rigorous, compositional logic of Symbolism. However, the emergence of Large Language Models (LLMs) is fostering a synthesis of these paradigms through a fundamental architectural shift: the move from Dense Monoliths to Modular, Routed Systems. This shift is fractal. At the Macro level, LLMs function as central planners, using symbolic protocols to orchestrate external tools and specialized neural agents. Simultaneously, at the Micro level, the models themselves are evolving into sparse, modular structures (such as Mixture-of-Experts) governed by internal routing mechanisms. In this post, we explore this transition toward Symbolic Routing. We discuss how this paradigm enables us to build societies of neural agents, discover latent modularity within dense networks, thus enabling composable, verifiable, interpretable and continually learnable AI system. And we also discuss how to leverage these structures to synthesize training data and formally verify AI reasoning.",
         section: "Posts",
         handler: () => {
           
@@ -127,17 +182,6 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/speeding-up-rl/";
           
         },
-      },{id: "post-getting-sac-to-work-on-a-massive-parallel-simulator-an-rl-journey-with-off-policy-algorithms",
-        
-          title: "Getting SAC to Work on a Massive Parallel Simulator: An RL Journey With...",
-        
-        description: "This post details how to get the Soft-Actor Critic (SAC) and other off-policy reinforcement learning algorithms to work on massively parallel simulators (e.g., Isaac Sim with thousands of robots simulated in parallel). In addition to tuning SAC for speed, the post also explores why SAC fails where PPO succeeds, highlighting a common problem in task design that many codebases share.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/sac-massive-sim/";
-          
-        },
       },{id: "post-pushing-meta-continual-learning-algorithms-to-the-limit",
         
           title: "Pushing Meta-Continual Learning Algorithms to the Limit",
@@ -149,37 +193,15 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/pushing-meta-cl-methods/";
           
         },
-      },{id: "post-language-as-a-window-into-the-mind-how-nlp-and-llms-advance-human-sciences",
+      },{id: "post-performative-prediction-made-practical",
         
-          title: "Language as a Window Into the Mind: How NLP and LLMs Advance Human...",
+          title: "Performative Prediction made practical",
         
-        description: "Can NLP predict heroin-addiction outcomes, uncover suicide risk, or simulate (and even influence) brain activity? Could LLMs one day contribute to research worthy of a Nobel Prize for advancing our understanding of human behavior? And what role do NLP scientists play in shaping that possibility? This post explores these questions, arguing that language technologies are not just tools that support scientific work (like literature search agents, writing tools, or coding assistants), but that by treating language as a window into the human mind, NLP and LLMs can actively help researchers uncover mechanisms of human behavior, cognition, and brain function.",
+        description: "Performative Prediction studies settings where deploying a model induces a distribution shift in the data with the aim of building robust and good-peforming models under these post-deployment effects. Most existing work in this area is theoretical and relies on strict assumptions to converge to those models, which makes the resulting techniques difficult to apply in practice and limits their accessibility to the broader Machine Learning (ML) community. In this blog post, we use visualization techniques 1) to provide an intuitive explanation of Performative Prediction and 2) to extract practical insights for studying convergence when theoretical assumptions do not hold.",
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/GCMDP-blogpost/blog/2026/nlp-for-human-sciences/";
-          
-        },
-      },{id: "post-model-misspecification-in-simulation-based-inference-recent-advances-and-open-challenges",
-        
-          title: "Model Misspecification in Simulation-Based Inference - Recent Advances and Open Challenges",
-        
-        description: "Model misspecification is a critical challenge in simulation-based inference (SBI), particularly in neural SBI methods that use simulated data to train flexible neural density estimators. These methods typically assume that simulators faithfully represent the true data-generating process, an assumption that is often violated in practice. Resulting discrepancies can make observed data effectively out-of-distribution relative to the simulations, leading to biased posterior distributions and misleading uncertainty quantification. This post reviews recent work on model misspecification in neural SBI, covering formal definitions, methods for detection and mitigation, and their underlying assumptions. It also discusses practical implications for SBI workflows and outlines open challenges for developing robust SBI methods that remain reliable in realistic, imperfectly specified applications.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/model-misspecification-in-sbi/";
-          
-        },
-      },{id: "post-do-language-models-really-learn-to-mislead-humans-via-rlhf",
-        
-          title: "Do Language Models Really Learn to Mislead Humans via RLHF?",
-        
-        description: "This post details an investigation of claims in Language Models Learn to Mislead Humans Via RLHF (ICLR 2025) that RLHF may unintentionally lead LLM agents to mislead humans (U-Sophistry). We found that the misleading behavior in the paper is the result of an unrealistic experimental setup and not of U-Sophistry, and can therefore be categorized as intentional misleading (I-Sophistry).",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/mislead-lm/";
+            window.location.href = "/GCMDP-blogpost/blog/2026/performative-prediction/";
           
         },
       },{id: "post-misalignments-and-rl-failure-modes-in-the-early-stage-of-superintelligence",
@@ -202,28 +224,6 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/measuregen/";
-          
-        },
-      },{id: "post-research-directions-in-multimodal-chain-of-thought-mcot-with-sketching",
-        
-          title: "Research Directions in Multimodal Chain-of-Thought (MCoT) with Sketching",
-        
-        description: "This article explores adding sketching to Multimodal Chain-of-Thought (MCoT)reasoning to enhance AI capabilities. It reviews past methods, identifies key gaps such as the lack of sketch-rationale datasets, and proposes advancing the field through targeted data collection, unified multimodal models, and reinforcement learning. Ethical considerations include mitigating cultural bias and visual misrepresentation in generated sketches.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/mcot-sketching/";
-          
-        },
-      },{id: "post-from-reinforce-to-dr-grpo-a-unified-perspective-on-llm-post-training",
-        
-          title: "From REINFORCE to Dr. GRPO: A Unified Perspective on LLM Post-Training",
-        
-        description: "Recently, many reinforcement learning (RL) algorithms have been applied to improve the post-training of large language models (LLMs). In this article, we aim to provide a unified perspective on the objectives of these RL algorithms, exploring how they relate to each other through the Policy Gradient Theorem — the fundamental theorem of policy gradient methods.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/llm-post-training/";
           
         },
       },{id: "post-are-dilemmas-and-conflicts-in-llm-alignment-solvable-a-view-from-priority-graph",
@@ -259,6 +259,17 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/introduction-to-stochastic-interpolants/";
           
         },
+      },{id: "post-generative-ai-archaeology",
+        
+          title: "Generative AI Archaeology",
+        
+        description: "We document the rise of the Generative AI Archaeologist, whose tools include linear algebra and probability theory, jailbreaking, and debuggers, compared to the metal detectors, pickaxes, and radar surveys of traditional archaeology. GenAI Archaeologists have reported findings both through luck by observing unexpected behaviour in publicly accessible models, and by exploiting the mathematical properties of models. In this blog, we survey five types of findings unearthed by GenAI Archaeologists and discuss the status of those findings.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/genai-archaeology/";
+          
+        },
       },{id: "post-from-trajectories-to-operators-a-unified-flow-map-perspective-on-generative-modeling",
         
           title: "From Trajectories to Operators — A Unified Flow Map Perspective on Generative Modeling...",
@@ -268,6 +279,28 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/flow-map-learning/";
+          
+        },
+      },{id: "post-understanding-and-fixing-bottlenecks-in-state-space-models-what-recency-and-over-smoothing-tell-us",
+        
+          title: "Understanding and Fixing Bottlenecks in State Space Models: What Recency and Over-Smoothing Tell...",
+        
+        description: "This work analyzes how recency bias and hidden-state over-smoothing emerge in modern State Space Models, revealing the bottlenecks that limit their ability to capture long-range dependencies.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/fixing-bottlenecks-in-state-space-models/";
+          
+        },
+      },{id: "post-the-effect-of-feature-resolution-on-embedding-dimension",
+        
+          title: "The effect of feature resolution on embedding dimension",
+        
+        description: "High-dimensional data can be compressed into lower-dimensional embeddings while retaining a relatively large amount of relevant information, a phenomenon which, despite its widespread use, we struggle to fully explain. In this post, we use a common property of datasets - a limit on the number of features per data point - to show how a slight uniform dependence between features can be exploited to reduce the required dimensions by at least a third, while sacrificing no information about the features. To do so, we introduce the concepts of dataset resolution and feature composition of a dataset, and analyse how a set of orderings of the dataset affect the types of partitions we can create of the dataset.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/feature-reduction/";
           
         },
       },{id: "post-evalcards-for-standardized-evaluation-reporting",
@@ -296,7 +329,7 @@ ninja.data = [{
         
           title: "AI Fundamentals: Valuing AI Agents &amp; Data Assets",
         
-        description: "Large Language Model (LLM) agents now read the world through managed-context pipelines, write to it via tool-calling APIs, and continuously re-wire themselves with fresh experience. Stakeholders therefore need a Generally Accepted Accounting Principles (GAAP) compatible method to price both (i) the agent&#39;s labour-like output and (ii) the data traces that fuel learning. We formalise a single unifying metric - agent Economic Value (AEV)- and demonstrate, using evidence from millions of real conversations, $1M of freelance software contracts, and 48k physician rubric points in healthcare, that these metrics are measurable today. We then extend the template to reinforcement-learning regimes in which grounded rewards equal cash flows. Lastly, we propose a financial settlement layer, which transforms the agent from a passive software user into an active economic participant.",
+        description: "Large Language Model (LLM) agents now read the world through managed-context pipelines, write to it via tool-calling APIs, and continuously re-wire themselves with fresh experience. Stakeholders therefore need a Generally Accepted Accounting Principles (GAAP) compatible method to price both (i) the agent&#39;s labour-like output and (ii) the data traces that fuel learning. We formalise a single unifying metric - agent Economic Value (AEV)- and demonstrate that these metrics are measurable today. We then extend the template to reinforcement-learning regimes in which grounded rewards equal cash flows. Lastly, we propose a financial settlement layer, which transforms the agent from a passive software user into an active economic participant.",
         section: "Posts",
         handler: () => {
           
@@ -314,6 +347,17 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/distill-example/";
           
         },
+      },{id: "post-navigating-the-manifold-a-geometric-perspective-on-diffusion-based-inverse-problems",
+        
+          title: "Navigating the Manifold — A Geometric Perspective on Diffusion-Based Inverse Problems",
+        
+        description: "This blogpost develops a geometric and probabilistic lens on diffusion priors for inverse problems. We show that a wide range of methods mostly instantiate two operator-splitting paradigms, i.e., posterior-guided sampling and clean-space local-MAP optimization. Through manifold diagrams, Tweedie-based animations, and step-by-step derivations, we explain how these paradigms decouple a pretrained diffusion prior from measurement physics, clarify when they approximate full posterior sampling versus MAP estimation, and distill practical design rules for building robust diffusion-based inverse solvers.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/diffusion-inverse-problems/";
+          
+        },
       },{id: "post-from-u-nets-to-dits-the-architectural-evolution-of-text-to-image-diffusion-models-2021-2025",
         
           title: "From U-Nets to DiTs: The Architectural Evolution of Text-to-Image Diffusion Models (2021–2025)",
@@ -325,26 +369,15 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/diffusion-architecture-evolution/";
           
         },
-      },{id: "post-defining-and-quantifying-compositional-structure",
+      },{id: "post-content-promotion-as-a-strategic-game-how-to-design-agentic-publishers-for-the-evolving-search-ecosystem-in-the-genai-era",
         
-          title: "Defining and quantifying compositional structure",
+          title: "Content Promotion as a Strategic Game: How to Design Agentic Publishers for the...",
         
-        description: "Compositionality is thought to be crucial in human cognition and AI, but we lack a scientific understanding of what it is. What kind of data is compositionally structured? Can we mathematically quantify the amount and character of compositional structure? This blog post introduces a novel approach for doing so, building off of existing tools from algorithmic information theory that formalize notions of complexity and structure. The mathematical definition of compositionality that we&#39;ll come to is rigorous, precise, and general, and the hope is that it can inspire novel research directions in AI for uncovering compositional structure in natural data.",
+        description: "With the rise of LLMs, publishers now operate in a dual world where traditional search and chat-like systems coexist. We propose a unified, game-theoretic view of this environment and highlight different tools, such as Multi-Agent Reinforcement Learning, that support the development of competitive content-optimization agents.",
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/GCMDP-blogpost/blog/2026/compositionality/";
-          
-        },
-      },{id: "post-chunktabpfn-training-free-long-context",
-        
-          title: "ChunkTabPFN: Training-free Long Context",
-        
-        description: "Tabular foundation models struggle with large datasets due to the quadratic attention. While methods like FlashAttention promise scalability, practical challenges persist in their application to tabular foundation models. Our work resolves these hurdles, enabling efficient attention, and reveals that contrary to the eariler reports, TabPFN&#39;s performance improves with larger contexts, highlighting its inherent robustness and minimal fine-tuning needs when scaling to complex, long datasets from the TabArena benchmark.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/chunked-tabpfn/";
+            window.location.href = "/GCMDP-blogpost/blog/2026/content-promotion-agent-design/";
           
         },
       },{id: "post-budget-alignment-making-models-reason-in-the-user-39-s-language",
@@ -356,6 +389,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/budget-alignment/";
+          
+        },
+      },{id: "post-beyond-the-rerun-why-reproducibility-is-failing-science",
+        
+          title: "Beyond the Rerun: Why Reproducibility is Failing Science",
+        
+        description: "Is reproducibility enough? We discuss the current reproducibility crisis and the limitations that focusing solely on this aspect of scientific project quality imposes on science. We propose a broader approach to the problem of scientific debt and outline practical actions researchers can take in their research. We also draw attention to the need for community action on the issue.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/beyond-the-rerun/";
           
         },
       },{id: "books-the-godfather",

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vector Combinations Table</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: transparent;
+            padding: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            background: #1e1e1e;
+            border-radius: 0;
+            overflow: hidden;
+        }
+        th {
+            background: #333;
+            color: #aaa;
+            padding: 15px 25px;
+            text-align: center;
+            font-weight: 600;
+            border-bottom: 2px solid #444;
+        }
+        td {
+            padding: 12px 25px;
+            text-align: center;
+            color: #ccc;
+            border-bottom: 1px solid #333;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover {
+            background: #252525;
+        }
+        .vector-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+        .color-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
+        }
+        .green { background: #1DA37E; }
+        .pink { background: #A75F9A; }
+        .orange { background: #AA6600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Vector</th>
+                    <th>Pink</th>
+                    <th>Green</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="vector-cell">
+                            <span class="color-circle pink"></span>
+                        </div>
+                    </td>
+                    <td>1</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="vector-cell">
+                            <span class="color-circle green"></span>
+                        </div>
+                    </td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="vector-cell">
+                            <span class="color-circle orange"></span>
+                        </div>
+                    </td>
+                    <td>-1</td>
+                    <td>-1</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="vector-cell">
+                            <span class="color-circle pink"></span>
+                            <span class="color-circle green"></span>
+                        </div>
+                    </td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="vector-cell">
+                            <span class="color-circle pink"></span>
+                            <span class="color-circle orange"></span>
+                        </div>
+                    </td>
+                    <td>0</td>
+                    <td>-1</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="vector-cell">
+                            <span class="color-circle green"></span>
+                            <span class="color-circle orange"></span>
+                        </div>
+                    </td>
+                    <td>-1</td>
+                    <td>0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

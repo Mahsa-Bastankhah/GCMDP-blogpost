@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Vector Diagram with Sphere</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        #container {
+            width: 100vw;
+            height: 100vh;
+        }
+        .instructions {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(45, 45, 45, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            color: #aaa;
+            font-size: 14px;
+            max-width: 300px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .instructions h3 {
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+        .instructions ul {
+            margin: 5px 0;
+            padding-left: 20px;
+        }
+        .toggle-button {
+            margin-top: 15px;
+            padding: 8px 12px;
+            background: rgba(70, 70, 70, 0.9);
+            border: 1px solid #555;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .toggle-button:hover {
+            background: rgba(90, 90, 90, 0.9);
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+    <div class="instructions">
+        <h3>3D Vector Controls</h3>
+        <ul>
+            <li><strong>Rotate view:</strong> Left click + drag</li>
+            <li><strong>Move vectors:</strong> Click sphere + drag</li>
+            <li><strong>Zoom:</strong> Scroll wheel</li>
+            <li><strong>Pan:</strong> Right click + drag</li>
+        </ul>
+        <div style="margin-top: 10px;">
+            <div><span style="color: #1DA37E;">●</span> Vector 1 (Green)</div>
+            <div><span style="color: #A75F9A;">●</span> Vector 2 (Purple)</div>
+            <div><span style="color: #AA6600;">●</span> Vector 3 (Orange)</div>
+            <div><span style="color: #4AACE2;">●</span> Vector 4 (Blue)</div>
+        </div>
+        <button class="toggle-button" id="toggleSphere">Hide Sphere Gradient</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1e1e1e);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 5, 5);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('container').appendChild(renderer.domElement);
+        
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 7);
+        scene.add(directionalLight);
+        
+        const pointLight = new THREE.PointLight(0xffffff, 0.4);
+        pointLight.position.set(-5, -5, -5);
+        scene.add(pointLight);
+        
+        // Grid helper
+        const gridHelper = new THREE.GridHelper(10, 20, 0x444444, 0x333333);
+        scene.add(gridHelper);
+        
+        // Orbit controls (simplified version)
+        let isRotating = false;
+        let isDraggingVector = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let activeVector = null;
+        
+        // Vector configuration
+        const vectorLength = 3;
+        const sphereRadius = 0.15;
+        const colors = {
+            vector1: 0x1DA37E,  // Green
+            vector2: 0xA75F9A,  // Purple
+            vector3: 0xAA6600,  // Orange
+            vector4: 0x4AACE2   // Blue
+        };
+        
+        // Vector directions (normalized)
+        const vectors = {
+            vector1: new THREE.Vector3(1, 0, 0),
+            vector2: new THREE.Vector3(0, 1, 0),
+            vector3: new THREE.Vector3(-0.7, -0.7, 0).normalize(),
+            vector4: new THREE.Vector3(0.5, 0.5, 0.7).normalize()
+        };
+        
+        // Store vector objects
+        const vectorObjects = {};
+        const sphereObjects = {};
+        const sphereLines = [];
+        let lightSphere = null;
+        
+        // Create the light sphere with gradient coloring
+        function createLightSphere() {
+            const sphereGeometry = new THREE.SphereGeometry(vectorLength, 128, 128);
+            
+            // Get position and color attributes
+            const positions = sphereGeometry.attributes.position;
+            const colorsArray = new Float32Array(positions.count * 3);
+            
+            // For each vertex on the sphere, calculate color based on distance to vectors
+            for (let i = 0; i < positions.count; i++) {
+                const vertex = new THREE.Vector3(
+                    positions.getX(i),
+                    positions.getY(i),
+                    positions.getZ(i)
+                );
+                
+                // Normalize to get direction
+                const direction = vertex.clone().normalize();
+                
+                // Calculate weighted color based on angular distance to each vector
+                let totalWeight = 0;
+                let r = 0, g = 0, b = 0;
+                
+                // Use inverse square of angular distance for smoother gradients
+                Object.entries(vectors).forEach(([name, vec]) => {
+                    const angle = direction.angleTo(vec);
+                    // Use a power function to control gradient smoothness
+                    // Higher power = sharper transitions
+                    const weight = Math.pow(Math.max(0, Math.cos(angle)), 3);
+                    
+                    const vecColor = new THREE.Color(colors[name]);
+                    
+                    r += vecColor.r * weight;
+                    g += vecColor.g * weight;
+                    b += vecColor.b * weight;
+                    totalWeight += weight;
+                });
+                
+                // Normalize the color
+                if (totalWeight > 0) {
+                    r /= totalWeight;
+                    g /= totalWeight;
+                    b /= totalWeight;
+                } else {
+                    // Fallback to white for points equidistant from all vectors
+                    r = g = b = 1;
+                }
+                
+                colorsArray[i * 3] = r;
+                colorsArray[i * 3 + 1] = g;
+                colorsArray[i * 3 + 2] = b;
+            }
+            
+            sphereGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+            
+            const sphereMaterial = new THREE.MeshPhongMaterial({
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.9,
+                side: THREE.DoubleSide,
+                depthWrite: true,
+                shininess: 100
+            });
+            
+            lightSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            scene.add(lightSphere);
+            
+            return lightSphere;
+        }
+        
+        // Update sphere colors when vectors move
+        function updateSphereColors() {
+            if (!lightSphere) return;
+            
+            const positions = lightSphere.geometry.attributes.position;
+            const colorsAttr = lightSphere.geometry.attributes.color;
+            
+            for (let i = 0; i < positions.count; i++) {
+                const vertex = new THREE.Vector3(
+                    positions.getX(i),
+                    positions.getY(i),
+                    positions.getZ(i)
+                );
+                
+                const direction = vertex.clone().normalize();
+                
+                let totalWeight = 0;
+                let r = 0, g = 0, b = 0;
+                
+                Object.entries(vectors).forEach(([name, vec]) => {
+                    const angle = direction.angleTo(vec);
+                    const weight = Math.pow(Math.max(0, Math.cos(angle)), 3);
+                    
+                    const vecColor = new THREE.Color(colors[name]);
+                    
+                    r += vecColor.r * weight;
+                    g += vecColor.g * weight;
+                    b += vecColor.b * weight;
+                    totalWeight += weight;
+                });
+                
+                if (totalWeight > 0) {
+                    r /= totalWeight;
+                    g /= totalWeight;
+                    b /= totalWeight;
+                } else {
+                    r = g = b = 1;
+                }
+                
+                colorsAttr.setXYZ(i, r, g, b);
+            }
+            
+            colorsAttr.needsUpdate = true;
+        }
+        
+        // Create a vector with arrow
+        function createVector(direction, color, name) {
+            const group = new THREE.Group();
+            
+            // Arrow shaft
+            const shaftGeometry = new THREE.CylinderGeometry(0.03, 0.03, vectorLength, 16);
+            const shaftMaterial = new THREE.MeshPhongMaterial({ 
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.2
+            });
+            const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
+            
+            // Arrow head (cone)
+            const coneGeometry = new THREE.ConeGeometry(0.1, 0.3, 16);
+            const coneMaterial = new THREE.MeshPhongMaterial({ 
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.3
+            });
+            const cone = new THREE.Mesh(coneGeometry, coneMaterial);
+            
+            // Position arrow head at the tip
+            cone.position.y = vectorLength / 2 + 0.15;
+            shaft.position.y = vectorLength / 2;
+            
+            group.add(shaft);
+            group.add(cone);
+            
+            // Create interactive sphere at the tip
+            const sphereGeometry = new THREE.SphereGeometry(sphereRadius, 32, 32);
+            const sphereMaterial = new THREE.MeshPhongMaterial({ 
+                color: color,
+                emissive: color,
+                emissiveIntensity: 0.4,
+                shininess: 100
+            });
+            const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            sphere.position.y = vectorLength;
+            sphere.userData = { vectorName: name, isDraggable: true };
+            group.add(sphere);
+            
+            // Orient the group in the direction
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+            group.setRotationFromQuaternion(quaternion);
+            
+            scene.add(group);
+            
+            vectorObjects[name] = group;
+            sphereObjects[name] = sphere;
+            
+            return group;
+        }
+        
+        // Create a line on the sphere surface between two points with gradient coloring
+        function createSphereLine(point1, point2, color1, color2) {
+            // Create a curved line along the sphere surface
+            // We'll use multiple segments to approximate the geodesic
+            const segments = 50;
+            const positions = [];
+            const colors = [];
+            
+            // Normalize the points to ensure they're on the sphere
+            const p1 = point1.clone().normalize().multiplyScalar(vectorLength);
+            const p2 = point2.clone().normalize().multiplyScalar(vectorLength);
+            
+            // Calculate the angle between the two points
+            const angle = p1.angleTo(p2);
+            
+            // Convert hex colors to THREE.Color objects
+            const c1 = new THREE.Color(color1);
+            const c2 = new THREE.Color(color2);
+            
+            // Create points along the great circle arc
+            for (let i = 0; i <= segments; i++) {
+                const t = i / segments;
+                const theta = t * angle;
+                
+                // Spherical linear interpolation (slerp)
+                const sinTotal = Math.sin(angle);
+                let point;
+                if (sinTotal < 0.001) {
+                    // Points are too close, just draw a straight line
+                    point = p1.clone().lerp(p2, t);
+                } else {
+                    const a = Math.sin((1 - t) * angle) / sinTotal;
+                    const b = Math.sin(t * angle) / sinTotal;
+                    
+                    point = new THREE.Vector3(
+                        a * p1.x + b * p2.x,
+                        a * p1.y + b * p2.y,
+                        a * p1.z + b * p2.z
+                    );
+                }
+                
+                positions.push(point.x, point.y, point.z);
+                
+                // Interpolate color - first half is color1, second half is color2
+                const color = c1.clone().lerp(c2, t);
+                colors.push(color.r, color.g, color.b);
+            }
+            
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            
+            const material = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                linewidth: 3,
+                transparent: true,
+                opacity: 0.9
+            });
+            
+            const line = new THREE.Line(geometry, material);
+            scene.add(line);
+            sphereLines.push({ line, p1: point1, p2: point2, color1, color2 });
+            
+            return line;
+        }
+        
+        // Update all sphere lines
+        function updateSphereLines() {
+            sphereLines.forEach(({ line, p1, p2, color1, color2 }) => {
+                const segments = 50;
+                const positions = [];
+                const colors = [];
+                
+                // Get current positions
+                const point1 = p1.clone().normalize().multiplyScalar(vectorLength);
+                const point2 = p2.clone().normalize().multiplyScalar(vectorLength);
+                
+                const angle = point1.angleTo(point2);
+                
+                // Convert hex colors to THREE.Color objects
+                const c1 = new THREE.Color(color1);
+                const c2 = new THREE.Color(color2);
+                
+                for (let i = 0; i <= segments; i++) {
+                    const t = i / segments;
+                    const theta = t * angle;
+                    
+                    const sinTotal = Math.sin(angle);
+                    let point;
+                    if (sinTotal < 0.001) {
+                        point = point1.clone().lerp(point2, t);
+                    } else {
+                        const a = Math.sin((1 - t) * angle) / sinTotal;
+                        const b = Math.sin(t * angle) / sinTotal;
+                        
+                        point = new THREE.Vector3(
+                            a * point1.x + b * point2.x,
+                            a * point1.y + b * point2.y,
+                            a * point1.z + b * point2.z
+                        );
+                    }
+                    
+                    positions.push(point.x, point.y, point.z);
+                    
+                    // Interpolate color
+                    const color = c1.clone().lerp(c2, t);
+                    colors.push(color.r, color.g, color.b);
+                }
+                
+                line.geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+                line.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            });
+        }
+        
+        // Helper to get combination direction - snaps to midpoint on sphere
+        function getCombinationDirection(vec1Name, vec2Name) {
+            const vec1 = vectors[vec1Name];
+            const vec2 = vectors[vec2Name];
+            // Get midpoint and normalize to sphere surface
+            return vec1.clone().add(vec2).multiplyScalar(0.5).normalize();
+        }
+        
+        // Update vector direction
+        function updateVector(name, newDirection) {
+            vectors[name].copy(newDirection.normalize());
+            const group = vectorObjects[name];
+            
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vectors[name]);
+            group.setRotationFromQuaternion(quaternion);
+        }
+        
+        // Create all vectors
+        createVector(vectors.vector1, colors.vector1, 'vector1');
+        createVector(vectors.vector2, colors.vector2, 'vector2');
+        createVector(vectors.vector3, colors.vector3, 'vector3');
+        createVector(vectors.vector4, colors.vector4, 'vector4');
+        
+        // Create the light sphere
+        createLightSphere();
+        
+        // Create lines on the sphere between every pair of vectors
+        // Vector 1 to all others
+        createSphereLine(vectors.vector1, vectors.vector2, colors.vector1, colors.vector2);
+        createSphereLine(vectors.vector1, vectors.vector3, colors.vector1, colors.vector3);
+        createSphereLine(vectors.vector1, vectors.vector4, colors.vector1, colors.vector4);
+        
+        // Vector 2 to remaining vectors
+        createSphereLine(vectors.vector2, vectors.vector3, colors.vector2, colors.vector3);
+        createSphereLine(vectors.vector2, vectors.vector4, colors.vector2, colors.vector4);
+        
+        // Vector 3 to remaining vector
+        createSphereLine(vectors.vector3, vectors.vector4, colors.vector3, colors.vector4);
+        
+        // Raycasting for mouse interaction
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        
+        function onMouseDown(event) {
+            if (event.button !== 0) return; // Only left click
+            
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            const spheres = Object.values(sphereObjects);
+            const intersects = raycaster.intersectObjects(spheres);
+            
+            if (intersects.length > 0) {
+                isDraggingVector = true;
+                activeVector = intersects[0].object.userData.vectorName;
+                event.preventDefault();
+            } else {
+                isRotating = true;
+            }
+            
+            previousMousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+        }
+        
+        function onMouseMove(event) {
+            const deltaX = event.clientX - previousMousePosition.x;
+            const deltaY = event.clientY - previousMousePosition.y;
+            
+            if (isDraggingVector && activeVector) {
+                // Get the mouse position in normalized device coordinates
+                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+                
+                // Create a plane perpendicular to the camera
+                const planeNormal = camera.position.clone().normalize();
+                const plane = new THREE.Plane(planeNormal, 0);
+                
+                raycaster.setFromCamera(mouse, camera);
+                const intersectPoint = new THREE.Vector3();
+                raycaster.ray.intersectPlane(plane, intersectPoint);
+                
+                if (intersectPoint) {
+                    // Update vector direction
+                    const newDirection = intersectPoint.clone().normalize();
+                    updateVector(activeVector, newDirection);
+                    updateSphereLines();
+                    updateSphereColors();
+                }
+            } else if (isRotating) {
+                // Rotate camera around origin
+                const rotationSpeed = 0.005;
+                
+                const spherical = new THREE.Spherical();
+                spherical.setFromVector3(camera.position);
+                
+                spherical.theta -= deltaX * rotationSpeed;
+                spherical.phi -= deltaY * rotationSpeed;
+                
+                // Clamp phi to avoid gimbal lock
+                spherical.phi = Math.max(0.1, Math.min(Math.PI - 0.1, spherical.phi));
+                
+                camera.position.setFromSpherical(spherical);
+                camera.lookAt(0, 0, 0);
+            }
+            
+            previousMousePosition = {
+                x: event.clientX,
+                y: event.clientY
+            };
+        }
+        
+        function onMouseUp() {
+            isRotating = false;
+            isDraggingVector = false;
+            activeVector = null;
+        }
+        
+        function onWheel(event) {
+            event.preventDefault();
+            const zoomSpeed = 0.1;
+            const delta = event.deltaY > 0 ? 1 : -1;
+            
+            camera.position.multiplyScalar(1 + delta * zoomSpeed);
+            
+            // Clamp distance
+            const distance = camera.position.length();
+            if (distance < 2) {
+                camera.position.normalize().multiplyScalar(2);
+            } else if (distance > 20) {
+                camera.position.normalize().multiplyScalar(20);
+            }
+        }
+        
+        // Event listeners
+        renderer.domElement.addEventListener('mousedown', onMouseDown);
+        renderer.domElement.addEventListener('mousemove', onMouseMove);
+        renderer.domElement.addEventListener('mouseup', onMouseUp);
+        renderer.domElement.addEventListener('wheel', onWheel, { passive: false });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Toggle sphere visibility
+        let sphereVisible = true;
+        const toggleButton = document.getElementById('toggleSphere');
+        toggleButton.addEventListener('click', () => {
+            sphereVisible = !sphereVisible;
+            if (lightSphere) {
+                lightSphere.material.opacity = sphereVisible ? 0.9 : 0;
+                toggleButton.textContent = sphereVisible ? 'Hide Sphere Gradient' : 'Show Sphere Gradient';
+            }
+        });
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>

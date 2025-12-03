@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="700" height="400" viewBox="0 0 700 400">
+    <!-- Layer 1: Base nodes -->
+    <g id="layer1">
+        <!-- A -->
+        <circle cx="140" cy="50" r="16" fill="#0173B2" stroke="#1e293b" stroke-width="2"/>
+        
+        <!-- B -->
+        <circle cx="280" cy="50" r="16" fill="#DE8F05" stroke="#1e293b" stroke-width="2"/>
+        
+        <!-- C -->
+        <circle cx="420" cy="50" r="16" fill="#029E73" stroke="#1e293b" stroke-width="2"/>
+        
+        <!-- D -->
+        <circle cx="560" cy="50" r="16" fill="#CC78BC" stroke="#1e293b" stroke-width="2"/>
+    </g>
+
+    <!-- Layer 2: Pairwise combinations -->
+    <g id="layer2">
+        <!-- A∪B -->
+        <circle cx="80" cy="140" r="10" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="100" cy="140" r="10" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- B∪C -->
+        <circle cx="170" cy="140" r="10" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="190" cy="140" r="10" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- C∪D -->
+        <circle cx="270" cy="140" r="10" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="290" cy="140" r="10" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- A∪D -->
+        <circle cx="370" cy="140" r="10" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="390" cy="140" r="10" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- A∪C -->
+        <circle cx="470" cy="140" r="10" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="490" cy="140" r="10" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- B∪D -->
+        <circle cx="570" cy="140" r="10" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="590" cy="140" r="10" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+    </g>
+
+    <!-- Layer 3: Triple combinations -->
+    <g id="layer3">
+        <!-- A∪B∪C -->
+        <circle cx="140" cy="235" r="8" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="131" cy="248" r="8" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="149" cy="248" r="8" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- A∪B∪D -->
+        <circle cx="280" cy="235" r="8" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="271" cy="248" r="8" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="289" cy="248" r="8" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- B∪C∪D -->
+        <circle cx="420" cy="235" r="8" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="411" cy="248" r="8" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="429" cy="248" r="8" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+        
+        <!-- A∪C∪D -->
+        <circle cx="560" cy="235" r="8" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="551" cy="248" r="8" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="569" cy="248" r="8" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+    </g>
+
+    <!-- Layer 4: Complete combination -->
+    <g id="layer4">
+        <!-- A∪B∪C∪D -->
+        <circle cx="343" cy="338" r="7" fill="#0173B2" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="357" cy="338" r="7" fill="#DE8F05" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="357" cy="352" r="7" fill="#029E73" stroke="#1e293b" stroke-width="1.5"/>
+        <circle cx="343" cy="352" r="7" fill="#CC78BC" stroke="#1e293b" stroke-width="1.5"/>
+    </g>
+</svg>

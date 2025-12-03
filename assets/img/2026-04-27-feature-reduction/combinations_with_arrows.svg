@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" style="background: transparent; background-color: transparent; color-scheme: light dark;" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="502px" height="120px" viewBox="0 0 502 120">
+<defs>
+  <!-- Arrowhead markers for each color -->
+  <marker id="arrowBlue" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L6,3 z" fill="#0173b2" style="fill: light-dark(rgb(1, 115, 178), rgb(74, 172, 226));"/>
+  </marker>
+  <marker id="arrowOrange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L6,3 z" fill="#de8f05" style="fill: light-dark(rgb(222, 143, 5), rgb(170, 102, 0));"/>
+  </marker>
+  <marker id="arrowGreen" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L6,3 z" fill="#029e73" style="fill: light-dark(rgb(2, 158, 115), rgb(29, 163, 126));"/>
+  </marker>
+  <marker id="arrowPurple" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L6,3 z" fill="#cc78bc" style="fill: light-dark(rgb(204, 120, 188), rgb(167, 95, 154));"/>
+  </marker>
+</defs>
+<g>
+  <!-- Arrows from Node A (blue) to its combinations -->
+  <!-- A to AB -->
+  <path d="M 90,28 Q 65,65 18,102" stroke="#0173b2" stroke-width="1.5" fill="none" marker-end="url(#arrowBlue)" opacity="0.6" style="stroke: light-dark(rgb(1, 115, 178), rgb(74, 172, 226));"/>
+  <!-- A to AD -->
+  <path d="M 92,32 Q 100,70 108,100" stroke="#0173b2" stroke-width="1.5" fill="none" marker-end="url(#arrowBlue)" opacity="0.6" style="stroke: light-dark(rgb(1, 115, 178), rgb(74, 172, 226));"/>
+  <!-- A to AC -->
+  <path d="M 106,26 Q 150,65 190,100" stroke="#0173b2" stroke-width="1.5" fill="none" marker-end="url(#arrowBlue)" opacity="0.6" style="stroke: light-dark(rgb(1, 115, 178), rgb(74, 172, 226));"/>
+
+  <!-- Arrows from Node B (orange) to its combinations -->
+  <!-- B to AB -->
+  <path d="M 190,28 Q 140,65 32,102" stroke="#de8f05" stroke-width="1.5" fill="none" marker-end="url(#arrowOrange)" opacity="0.6" style="stroke: light-dark(rgb(222, 143, 5), rgb(170, 102, 0));"/>
+  <!-- B to BC -->
+  <path d="M 204,32 Q 250,70 290,100" stroke="#de8f05" stroke-width="1.5" fill="none" marker-end="url(#arrowOrange)" opacity="0.6" style="stroke: light-dark(rgb(222, 143, 5), rgb(170, 102, 0));"/>
+  <!-- B to BD -->
+  <path d="M 208,26 Q 290,65 382,100" stroke="#de8f05" stroke-width="1.5" fill="none" marker-end="url(#arrowOrange)" opacity="0.6" style="stroke: light-dark(rgb(222, 143, 5), rgb(170, 102, 0));"/>
+
+  <!-- Arrows from Node C (green) to its combinations -->
+  <!-- C to AC -->
+  <path d="M 294,28 Q 250,65 218,102" stroke="#029e73" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)" opacity="0.6" style="stroke: light-dark(rgb(2, 158, 115), rgb(29, 163, 126));"/>
+  <!-- C to BC -->
+  <path d="M 296,32 Q 300,70 302,100" stroke="#029e73" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)" opacity="0.6" style="stroke: light-dark(rgb(2, 158, 115), rgb(29, 163, 126));"/>
+  <!-- C to CD -->
+  <path d="M 310,26 Q 390,65 474,100" stroke="#029e73" stroke-width="1.5" fill="none" marker-end="url(#arrowGreen)" opacity="0.6" style="stroke: light-dark(rgb(2, 158, 115), rgb(29, 163, 126));"/>
+
+  <!-- Arrows from Node D (purple) to its combinations -->
+  <!-- D to AD -->
+  <path d="M 394,28 Q 260,65 118,102" stroke="#cc78bc" stroke-width="1.5" fill="none" marker-end="url(#arrowPurple)" opacity="0.6" style="stroke: light-dark(rgb(204, 120, 188), rgb(167, 95, 154));"/>
+  <!-- D to BD -->
+  <path d="M 398,32 Q 398,70 394,100" stroke="#cc78bc" stroke-width="1.5" fill="none" marker-end="url(#arrowPurple)" opacity="0.6" style="stroke: light-dark(rgb(204, 120, 188), rgb(167, 95, 154));"/>
+  <!-- D to CD -->
+  <path d="M 408,26 Q 450,65 486,100" stroke="#cc78bc" stroke-width="1.5" fill="none" marker-end="url(#arrowPurple)" opacity="0.6" style="stroke: light-dark(rgb(204, 120, 188), rgb(167, 95, 154));"/>
+
+  <!-- Large circles (top row) -->
+  <ellipse cx="97" cy="17" rx="16" ry="16" fill="#0173b2" stroke="#1e293b" stroke-width="2" pointer-events="all" style="fill: light-dark(rgb(1, 115, 178), rgb(74, 172, 226)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="199" cy="17" rx="16" ry="16" fill="#de8f05" stroke="#1e293b" stroke-width="2" pointer-events="all" style="fill: light-dark(rgb(222, 143, 5), rgb(170, 102, 0)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="301" cy="17" rx="16" ry="16" fill="#029e73" stroke="#1e293b" stroke-width="2" pointer-events="all" style="fill: light-dark(rgb(2, 158, 115), rgb(29, 163, 126)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="403" cy="17" rx="16" ry="16" fill="#cc78bc" stroke="#1e293b" stroke-width="2" pointer-events="all" style="fill: light-dark(rgb(204, 120, 188), rgb(167, 95, 154)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+
+  <!-- Combination circles (bottom row) -->
+  <!-- AB -->
+  <ellipse cx="10" cy="109" rx="10" ry="10" fill="#0173b2" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(1, 115, 178), rgb(74, 172, 226)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="30" cy="109" rx="10" ry="10" fill="#de8f05" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(222, 143, 5), rgb(170, 102, 0)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  
+  <!-- AD -->
+  <ellipse cx="102" cy="109" rx="10" ry="10" fill="#0173b2" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(1, 115, 178), rgb(74, 172, 226)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="122" cy="109" rx="10" ry="10" fill="#cc78bc" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(204, 120, 188), rgb(167, 95, 154)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  
+  <!-- AC -->
+  <ellipse cx="194" cy="109" rx="10" ry="10" fill="#0173b2" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(1, 115, 178), rgb(74, 172, 226)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="214" cy="109" rx="10" ry="10" fill="#029e73" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(2, 158, 115), rgb(29, 163, 126)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  
+  <!-- BC -->
+  <ellipse cx="286" cy="109" rx="10" ry="10" fill="#de8f05" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(222, 143, 5), rgb(170, 102, 0)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="306" cy="109" rx="10" ry="10" fill="#029e73" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(2, 158, 115), rgb(29, 163, 126)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  
+  <!-- BD -->
+  <ellipse cx="378" cy="109" rx="10" ry="10" fill="#de8f05" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(222, 143, 5), rgb(170, 102, 0)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="398" cy="109" rx="10" ry="10" fill="#cc78bc" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(204, 120, 188), rgb(167, 95, 154)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  
+  <!-- CD -->
+  <ellipse cx="470" cy="109" rx="10" ry="10" fill="#029e73" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(2, 158, 115), rgb(29, 163, 126)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+  <ellipse cx="490" cy="109" rx="10" ry="10" fill="#cc78bc" stroke="#1e293b" stroke-width="1.5" pointer-events="all" style="fill: light-dark(rgb(204, 120, 188), rgb(167, 95, 154)); stroke: light-dark(rgb(30, 41, 59), rgb(195, 204, 220));"/>
+</g>
+</svg>

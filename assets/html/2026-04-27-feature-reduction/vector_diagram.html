@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Vector Diagram</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        canvas {
+            border: 1px solid #444;
+            cursor: pointer;
+            display: block;
+            background: #1e1e1e;
+        }
+        .instructions {
+            margin-top: 15px;
+            padding: 10px;
+            background: #262626;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="vectorCanvas" width="600" height="600"></canvas>
+        <div class="instructions">
+            Click and drag on the canvas to rotate the orange vector. The combination vectors will update in real-time.
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('vectorCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Configuration
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const vectorLength = 150;
+        const circleRadius = 8;
+        
+        // Colors
+        const color1 = '#1DA37E'; // Green
+        const color2 = '#A75F9A'; // Purple
+        const color3 = '#AA6600'; // Orange
+        
+        // Interactive vector angle
+        let interactiveAngle = Math.PI * 5 / 4; // Start at 225 degrees (lower left quadrant)
+        let isDragging = false;
+        
+        // Vector directions (in radians)
+        const vector1Angle = 0; // Positive x-axis
+        const vector2Angle = Math.PI / 2; // Positive y-axis
+        
+        function drawGrid() {
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            
+            // Vertical lines
+            for (let x = 0; x <= canvas.width; x += 50) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+            
+            // Horizontal lines
+            for (let y = 0; y <= canvas.height; y += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+        
+        function drawQuadrantShading() {
+            // Shade the lower-left quadrant (negative x, negative y)
+            ctx.fillStyle = 'rgba(80, 80, 80, 0.3)';
+            ctx.fillRect(0, centerY, centerX, canvas.height - centerY);
+        }
+        
+        function drawAxes() {
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 2;
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+            
+            // Axis labels
+            ctx.fillStyle = '#aaa';
+            ctx.font = '14px Arial';
+            ctx.fillText('x', canvas.width - 20, centerY - 10);
+            ctx.fillText('y', centerX + 10, 20);
+        }
+        
+        function drawVector(angle, color, label, includeCircle = true) {
+            const endX = centerX + vectorLength * Math.cos(angle);
+            const endY = centerY - vectorLength * Math.sin(angle);
+            
+            // Draw vector line
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            
+            // Draw arrowhead
+            const arrowSize = 10;
+            const arrowAngle = Math.PI / 6;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(endX, endY);
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(angle - arrowAngle),
+                endY + arrowSize * Math.sin(angle - arrowAngle)
+            );
+            ctx.lineTo(
+                endX - arrowSize * Math.cos(angle + arrowAngle),
+                endY + arrowSize * Math.sin(angle + arrowAngle)
+            );
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw circle at the end with enhanced styling
+            if (includeCircle) {
+                // Add subtle shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetX = 2;
+                ctx.shadowOffsetY = 2;
+                
+                // Draw outer glow
+                ctx.fillStyle = color + '80'; // Semi-transparent version
+                ctx.beginPath();
+                ctx.arc(endX, endY, circleRadius + 3, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw main circle
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(endX, endY, circleRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Add white border for definition
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(endX, endY, circleRadius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Add highlight for 3D effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(endX - circleRadius * 0.3, endY - circleRadius * 0.3, circleRadius * 0.4, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            }
+            
+            return { endX, endY };
+        }
+        
+        function drawCombinationVector(angle1, angle2, colors) {
+            // Calculate the midpoint angle between two vectors
+            // Need to handle the case where angles wrap around (e.g., 350° and 10°)
+            let midAngle;
+            let diff = angle2 - angle1;
+            
+            // Normalize the difference to be between -π and π
+            while (diff > Math.PI) diff -= 2 * Math.PI;
+            while (diff < -Math.PI) diff += 2 * Math.PI;
+            
+            // Calculate midpoint taking the shorter arc
+            midAngle = angle1 + diff / 2;
+            
+            const endX = centerX + vectorLength * Math.cos(midAngle);
+            const endY = centerY - vectorLength * Math.sin(midAngle);
+            
+            // Draw vector line with gradient or dashed style
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Draw circles at the end for both colors with enhanced styling
+            colors.forEach((color, index) => {
+                const offset = (index - 0.5) * circleRadius * 1.5;
+                const perpX = -Math.sin(midAngle) * offset;
+                const perpY = -Math.cos(midAngle) * offset;
+                
+                const circleX = endX + perpX;
+                const circleY = endY + perpY;
+                const smallRadius = circleRadius * 0.8;
+                
+                // Add subtle shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                
+                // Draw outer glow
+                ctx.fillStyle = color + '80'; // Semi-transparent version
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, smallRadius + 2, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Draw main circle
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, smallRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Add white border for definition
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(circleX, circleY, smallRadius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                // Add highlight for 3D effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(circleX - smallRadius * 0.3, circleY - smallRadius * 0.3, smallRadius * 0.35, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            });
+        }
+        
+        function normalizeAngle(angle) {
+            while (angle < 0) angle += 2 * Math.PI;
+            while (angle >= 2 * Math.PI) angle -= 2 * Math.PI;
+            return angle;
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            drawGrid();
+            drawQuadrantShading();
+            drawAxes();
+            
+            // Draw the two base vectors
+            drawVector(vector1Angle, color1, 'Vector 1');
+            drawVector(vector2Angle, color2, 'Vector 2');
+            
+            // Draw the combination of the two base vectors (halfway between, unit length)
+            const baseCombinationAngle = (vector1Angle + vector2Angle) / 2;
+            drawCombinationVector(vector1Angle, vector2Angle, [color1, color2]);
+            
+            // Draw the interactive vector
+            drawVector(interactiveAngle, color3, 'Interactive');
+            
+            // Draw combination between interactive vector and vector 1
+            drawCombinationVector(vector1Angle, interactiveAngle, [color1, color3]);
+            
+            // Draw combination between interactive vector and vector 2
+            drawCombinationVector(vector2Angle, interactiveAngle, [color2, color3]);
+        }
+        
+        function getMouseAngle(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            
+            const dx = mouseX - centerX;
+            const dy = centerY - mouseY; // Invert y-axis
+            
+            return Math.atan2(dy, dx);
+        }
+        
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            interactiveAngle = getMouseAngle(e);
+            draw();
+        });
+        
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                interactiveAngle = getMouseAngle(e);
+                draw();
+            }
+        });
+        
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+        
+        // Touch events for mobile
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isDragging = true;
+            const touch = e.touches[0];
+            interactiveAngle = getMouseAngle(touch);
+            draw();
+        });
+        
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isDragging) {
+                const touch = e.touches[0];
+                interactiveAngle = getMouseAngle(touch);
+                draw();
+            }
+        });
+        
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            isDragging = false;
+        });
+        
+        // Initial draw
+        draw();
+    </script>
+</body>
+</html>
