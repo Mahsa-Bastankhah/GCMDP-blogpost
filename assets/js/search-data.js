@@ -94,26 +94,15 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/GCMDP/";
           
         },
-      },{id: "post-wait-do-we-need-to-wait-revisiting-budget-forcing-for-sequential-test-time-scaling",
+      },{id: "post-visual-reversal-curse-from-general-domain-to-remote-sensing-images",
         
-          title: "Wait, Do We Need to Wait? Revisiting Budget Forcing for Sequential Test-Time Scaling...",
+          title: "Visual Reversal Curse: From General Domain to Remote Sensing Images",
         
-        description: "This blog revisits budget forcing, a sequential test-time scaling technique for reasoning models by controlling when it continues thinking versus when it must answer. We evaluate how well the method transfers across model types, including non-reasoning models, and whether alternative keywords work. We provide practical guidelines for using the technique.",
+        description: "The &#39;Reversal Curse&#39; highlights a fundamental limitation in AI: models often fail to infer inverse relationships. This post investigates whether this curse extends to Vision Foundation Models and proposes remote sensing image translation as the optimal testbed for evaluating bidirectional visual generalization.",
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/GCMDP-blogpost/blog/2026/wait-do-we-need-to-wait/";
-          
-        },
-      },{id: "post-text-to-image-compression-for-long-context-understanding",
-        
-          title: "Text-to-Image compression for long context understanding",
-        
-        description: "Humans process text through visual perception much like viewing images or videos, but current AI systems typically use different encoders and processing pipelines when handling different modalities. In this blog post, we investigate recent works that attempt a human-inspired paradigm for processing texts that is converting textual contexts into images and subsequently using visual language models (VLMs) to process them. We start by explaining technical implementations of such conversions and their strengths. We then perform evaluation on long context understanding benchmarks that are more challenging than those used in prior works, with the objective to better analyze how these methods work or fail. Finally, we implement several improvements to existing approaches, including refined conversion techniques and context preprocessing strategies before conversion to images, observing their impacts on task performance to derive insights on future research directions.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/visual-long-context/";
+            window.location.href = "/GCMDP-blogpost/blog/2026/visual-reversal-curse-from-general-domain-to-remote-sensing-images/";
           
         },
       },{id: "post-using-large-language-models-to-simulate-and-predict-human-decision-making",
@@ -149,6 +138,17 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/unlearning-or-untraining/";
           
         },
+      },{id: "post-unigramlm-an-attempt-at-writing-the-missing-manual",
+        
+          title: "UnigramLM - An Attempt at Writing the Missing Manual",
+        
+        description: "This post is my attempt to write down the UnigramLM tokenization algorithm cleanly and explicitly because, well, I still haven&#39;t found such a derivation and I think understanding the theory behind the method could help us make it better. I&#39;ll formalize the generative model around which the algorithm is based, derive the EM updates, explain why pruning is needed (and how it&#39;s done), and point out the spots where the practical implementation defined by the SentencePiece library diverges from the pretty mathematical models.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/unigramlm-manual/";
+          
+        },
       },{id: "post-tracing-the-principles-behind-modern-diffusion-models",
         
           title: "Tracing the Principles Behind Modern Diffusion Models",
@@ -180,6 +180,17 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/speeding-up-rl/";
+          
+        },
+      },{id: "post-using-graph-neural-networks-in-reinforcement-learning-a-practical-guide",
+        
+          title: "Using Graph Neural Networks in Reinforcement Learning: A Practical Guide",
+        
+        description: "Graph Neural Networks (GNNs) have achieved excellent results for modelling relational data in many supervised learning domains. However, much fewer works have explored their potential in Reinforcement Learning (RL) despite the ubiquity of practical problems defined over graphs. In this blog post, we discuss how GNNs can be effectively integrated in Deep RL frameworks, covering crucial design decisions and practical implementation concerns. In doing so, we hope to facilitate unlocking new capabilities for RL agents to reason in graph-structured environments with dynamic action spaces and varying input sizes.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/rl-with-gnns/";
           
         },
       },{id: "post-pushing-meta-continual-learning-algorithms-to-the-limit",
@@ -224,28 +235,6 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/measuregen/";
-          
-        },
-      },{id: "post-are-dilemmas-and-conflicts-in-llm-alignment-solvable-a-view-from-priority-graph",
-        
-          title: "Are Dilemmas and Conflicts in LLM Alignment Solvable? A View from Priority Graph...",
-        
-        description: "As Large Language Models (LLMs) become more powerful and autonomous, they increasingly face conflicts and dilemmas in many scenarios. We first summarize and taxonomize these diverse conflicts. Then, we model the LLM&#39;s preferences to make different choices as a priority graph, where instructions and values are nodes, and the edges represent context-specific priorities determined by the model&#39;s output distribution. This graph reveals that a unified stable LLM alignment is very challenging, because the graph is not static in different contexts. Besides, it also reveals a potential vulnerability: priority hacking, where adversaries can craft deceptive contexts to manipulate the graph and bypass safety alignments. To counter this, we propose a runtime verification mechanism, enabling LLMs to query external sources to ground their context and resist manipulation. While this approach enhances robustness, we also acknowledge that many ethical and value dilemmas are philosophically irreducible, posing an open challenge for the future of AI alignment.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/llm-conflicts/";
-          
-        },
-      },{id: "post-justrl-scaling-a-1-5b-llm-with-a-simple-rl-recipe",
-        
-          title: "JustRL: Scaling a 1.5B LLM with a Simple RL Recipe",
-        
-        description: "Training small reasoning models with RL has become a race toward complexity, using multi-stage pipelines, dynamic schedules, and curriculum learning. We ask whether this complexity necessary? We show that JustRL, a simple recipe with fixed hyperparameters, achieves state-of-the-art performance on two different 1.5B base models (54.5% and 64.3% across 9 math benchmarks) while using 2× less compute than sophisticated approaches. The same hyperparameters transfer across both models without tuning, and training remains stable over thousands of steps without intervention. This suggests the field may be adding complexity to solve problems that disappear with a stable, scaled-up baseline.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/justrl/";
           
         },
       },{id: "post-introduction-to-stochastic-interpolants",
@@ -325,17 +314,6 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/elastic-weight-consolidation-nuts-bolts/";
           
         },
-      },{id: "post-ai-fundamentals-valuing-ai-agents-amp-data-assets",
-        
-          title: "AI Fundamentals: Valuing AI Agents &amp; Data Assets",
-        
-        description: "Large Language Model (LLM) agents now read the world through managed-context pipelines, write to it via tool-calling APIs, and continuously re-wire themselves with fresh experience. Stakeholders therefore need a Generally Accepted Accounting Principles (GAAP) compatible method to price both (i) the agent&#39;s labour-like output and (ii) the data traces that fuel learning. We formalise a single unifying metric - agent Economic Value (AEV)- and demonstrate that these metrics are measurable today. We then extend the template to reinforcement-learning regimes in which grounded rewards equal cash flows. Lastly, we propose a financial settlement layer, which transforms the agent from a passive software user into an active economic participant.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/economic-agents/";
-          
-        },
       },{id: "post-sample-blog-post",
         
           title: "Sample Blog Post",
@@ -345,6 +323,28 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/distill-example/";
+          
+        },
+      },{id: "post-why-machines-can-39-t-make-up-their-mind-exploring-a-psychological-perspective-towards-llm-failures",
+        
+          title: "Why Machines Can&#39;t Make Up Their Mind? - Exploring a Psychological Perspective towards...",
+        
+        description: "We explore a unifying framework for LLM failures, including hallucinations, sycophancy, multi-hop reasoning breakdowns, and internal contradictions. We interpret these issues as energy minimization in areas with conflicting meaning. This perspective connects cognitive dissonance from psychology to the geometry of neural networks.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/dissonant-machine/";
+          
+        },
+      },{id: "post-discretisation-invariance",
+        
+          title: "Discretisation invariance",
+        
+        description: "We are going to talk about discretisation invariance - a recent innovation in scientific machine learning. Discretisation invariance is a requirement that ensures the architecture can process inputs of different resolutions. We will formally define this property, provide examples, generate datasets, train architectures, and discuss whether discretisation invariance is living up to its promise.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/discretisation-invariance/";
           
         },
       },{id: "post-navigating-the-manifold-a-geometric-perspective-on-diffusion-based-inverse-problems",
@@ -380,17 +380,6 @@ ninja.data = [{
             window.location.href = "/GCMDP-blogpost/blog/2026/content-promotion-agent-design/";
           
         },
-      },{id: "post-budget-alignment-making-models-reason-in-the-user-39-s-language",
-        
-          title: "Budget Alignment: Making Models Reason in the User&#39;s Language",
-        
-        description: "We explore a two step multilingual alignment recipe for large language models to keep reasoning and answers in the user language while preserving accuracy.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/GCMDP-blogpost/blog/2026/budget-alignment/";
-          
-        },
       },{id: "post-beyond-the-rerun-why-reproducibility-is-failing-science",
         
           title: "Beyond the Rerun: Why Reproducibility is Failing Science",
@@ -400,6 +389,28 @@ ninja.data = [{
         handler: () => {
           
             window.location.href = "/GCMDP-blogpost/blog/2026/beyond-the-rerun/";
+          
+        },
+      },{id: "post-a-human-centric-framework-for-debating-the-ethics-of-ai-consciousness-under-uncertainty",
+        
+          title: "A Human-centric Framework for Debating the Ethics of AI Consciousness Under Uncertainty",
+        
+        description: "As AI systems become increasingly sophisticated, questions about machine consciousness and its ethical implications have moved from fringe speculation to mainstream academic debate. We address these limitations through a structured three-level framework grounded in philosophical uncertainty.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2026/a-human-centric-framework-for-debating-the-ethics-of-ai-consciousness-under-uncertainty/";
+          
+        },
+      },{id: "post-",
+        
+          title: "",
+        
+        description: "",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/GCMDP-blogpost/blog/2025/2026-04-27-visual-long-context/";
           
         },
       },{id: "books-the-godfather",
