@@ -207,7 +207,8 @@ As indicated by the goal-conditioned transitinos, the agent will always stay at 
   Goal-conditioned RL (GCRL) methods aim to not only reach the goal but also stay at the goal as long as possible, while stochastic shortest path (SSP) algorithms are tasked to reach the goal as quickly as possible.
 </div>
 
-Prior work has already showns that (See Sec. 2.3 of Bertsekas and Tsitsiklis (1996)<d-cite key="bertsekas1996neuro"></d-cite> or Theorem 2.21 of Mausam and Kolobov (2012)<d-cite key="kolobov2012planning"></d-cite>) any infinite horizon RL problem can be converted into a SSP problem. This appealing connection between RL and SSP raises the question:
+<span style="color: #e56a1eff;">
+Prior work has already showns that (See Sec. 2.3 of Bertsekas and Tsitsiklis (1996)<d-cite key="bertsekas1996neuro"></d-cite> or Theorem 2.21 of Mausam and Kolobov (2012)<d-cite key="kolobov2012planning"></d-cite>) any infinite horizon RL problem can be converted into a SSP problem. </span>This appealing connection between RL and SSP raises the question:
 
 <p align="center"><i>Can we convert any RL problem into a GCRL problem?</i></p>
 
@@ -377,7 +378,7 @@ Therefore, when $\gamma_{\text{aug}} = 1$, the augmented GCMDP preserves policy 
   &\overset{(f)}{=} \frac{(1 - \gamma) \gamma_{\text{aug}} }{1 - \gamma \gamma_{\text{aug}}} \mathbb{E}_{s \sim p_{\gamma \gamma_{\text{aug}}}^{\pi_{\text{aug}}}(s), a \sim \pi_{\text{aug}}(a \mid s)}\left[ r(s, a) \right] \\
   &= \frac{(1 - \gamma) \gamma_{\text{aug}} }{1 - \gamma \gamma_{\text{aug}}} J_{\gamma \gamma_{\text{aug}}}(\pi_{\text{aug}})
   \end{align*}
-  where in <i>(a)</i> we apply the observation that reaching the success state $g_+$ at exact time step $t$ in the augmented GCMDP suggests that the hitting time must be less than $t$, in <i>(b)</i> we use the additive axiom of probability for disjoint events, in <i>(c)</i> we swap the sum over time step $t$ and the sum over hitting time $h$ by grouping the terms using differet hitting time, in <i>(d)</i> we plug in the definition of the hitting time, in <i>(e)</i> we apply change of variable, and in <i>(f)</i> we plug in the definition of the successor measure (Eq.$~\ref{eq:succ-measure}$).
+  where in <i>(a)</i> we apply the observation that reaching the success state $g_+$ at exact time step $t$ in the augmented GCMDP suggests that the hitting time must be less than $t$, in <i>(b)</i> we use the additive axiom of probability for disjoint events, in <i>(c)</i> we swap the sum over time step $t$ and the sum over hitting time $h$ by grouping the terms using differet hitting time, in <i>(d)</i> we plug in the definition of the hitting time (<a href="#lemma:hitting-time-prob-mass">Lemma 1</a>), in <i>(e)</i> we apply change of variable, and in <i>(f)</i> we plug in the definition of the successor measure (Eq.$~\ref{eq:succ-measure}$).
   </p>
   <p>
   Therefore, when setting $\gamma_{\text{aug}} = 1$, we have $p^{\pi_{\text{aug}}}_{\gamma_{\text{aug}} = 1}(g_+) = J_{\gamma}(\pi_{\text{aug}})$. Thus, maximizing the successor measure in the augmented GCMDP is equivalent to maximizing the RL objective in the original MDP, i.e.,
@@ -387,9 +388,19 @@ Therefore, when $\gamma_{\text{aug}} = 1$, the augmented GCMDP preserves policy 
   </p>
 </details>
 
-### Remarks.
+<span style="color: #e56a1eff;">
+<strong>Remark.</strong> When setting $$\gamma_{\text{aug}} = 1$$, one intriguing observation is that the augmented GCMDP is also equivalent to a SSP problem.
+</span>
 
-## Preliminary experiments
+We next mention some practical caveats of our conversion from a RL problem to a GCRL problem.
+
+### Caveats
+
+Hindsight relabeling<d-cite key="andrychowicz2017hindsight"></d-cite> is a widely used technique for solving GCRL and SSP problems. This technique builds upon the intuition that learning to reach some close (easy) goals helps the agent reach far away (difficult) goals later, resulting in automatic curriculum learning. However, using GCRL algorithms with highsight relabling to solve our augmented GCMDP might not speed up learning because the augmented states $g_+$ and $g_-$ are not in the original state space.
+
+In practice, solving the GCMDP might not be easier than solving the original MDP directly (e.g., using TD learning methods). The reason are twofolds. First, the main component of our construction is to augment the transition probability measure using the reward function in the original MDP. After augmentation, the rewards go into the stochasticity of the transition, resulting in much higher variance when interacting with the environment. Second, for dense rewards that provide supervision for RL algorithms at each time step, those supervisions have been deferred into the two additional states $g_+$ and $g_-$ (a sparse reward problem), inducing much more challenging exploration.
+
+## Does the conversion work in practice?
 
 We conduct experiments in the Riverswim environment, which requires exploration to reach the end of the river (linear chain of states) by choosing to move right at each state. The agent receives a reward of 1.0 in the rightmost state and receives a small distractor reward of 0.005 if it moves left at any other state. To avoid policy initialization bias, we randomize which action moves left vs. right at each state. 
 
