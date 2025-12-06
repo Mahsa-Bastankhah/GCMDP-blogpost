@@ -389,7 +389,7 @@ Therefore, when $\gamma_{\text{aug}} = 1$, the augmented GCMDP preserves policy 
 </details>
 
 <span style="color: #e56a1eff;">
-<strong>Remark.</strong> When setting $$\gamma_{\text{aug}} = 1$$, one intriguing observation is that the augmented GCMDP is also equivalent to a SSP problem.
+<strong style="color: #e56a1eff;">Remark.</strong> When setting $$\gamma_{\text{aug}} = 1$$, one intriguing observation is that the augmented GCMDP is also equivalent to a SSP problem.
 </span>
 
 We next mention some practical caveats of our conversion from a RL problem to a GCRL problem.
