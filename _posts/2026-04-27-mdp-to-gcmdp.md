@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: "Learning to maximize rewards via reaching goals"
-description: "Goal-conditioned reinforcement learning learns to reach goals instead of optimizing hand-crafted rewards. Despite its popularity, goal-conditioned reinforcement learning is often categorized as a special reinforcement learning problem by the community. In this post, we aim to build a direct conversion from any reward-maximization reinforcement learning problem to a goal-conditioned reinforcement learning problem, additionally drawing connections with the stochastic shortest path framework. Our conversion provides a new perspective to understand the reinforcement learning problem: <i>maximizing rewards is equivalent to reaching some goals</i>."
+description: "Goal-conditioned reinforcement learning learns to reach goals instead of optimizing hand-crafted rewards. Despite its popularity, the community often categorizes goal-conditioned reinforcement learning as a special case of reinforcement learning. In this post, we aim to build a direct conversion from any reward-maximization reinforcement learning problem to a goal-conditioned reinforcement learning problem, and to draw connections with the stochastic shortest path framework. Our conversion provides a new perspective on the reinforcement learning problem: <i>maximizing rewards is equivalent to reaching some goals</i>."
 
 date: 2026-04-27
 future: true
@@ -370,21 +370,13 @@ In practice, solving the augmented GCMDP might not be easier than solving the or
 ## Does the conversion work in practice?
 
 <div class="row mt-3">
-  <video autoplay loop muted playsinline style="width:100%; border-radius:4px;">
-    <source path="../assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking.mp4" type="video/mp4">
+  <video autoplay loop muted playsinline class="img-fluid rounded" preload="metadata">
+    <source src="{{ 'assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking.mp4' | relative_url }}" type="video/mp4">
     Your browser doesn’t support the video tag.
   </video>
 </div>
-<!-- <div style="display:flex; justify-content:center; gap:1rem; margin:1.5em 0;">
-  <figure style="margin:0; text-align:center; flex:1;">
-    <video autoplay loop muted playsinline style="width:100%; border-radius:4px;">
-      <source src="../assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking.mp4" type="video/mp4">
-      Your browser doesn’t support the video tag.
-    </video>
-  </figure>
-</div> -->
 <div class="caption">
-  Cliff walking involves crossing a gridworld from a random start (stool) to the goal (cookie) while avoiding falling off a cliff.
+  Cliff Walking involves crossing a gridworld from a random start (stool) to the goal (cookie) while avoiding falling off a cliff.
 </div>
 
 To study whether we can use GCRL algorithms to solve the augmented GCMDP, we conduct experiments in a canonical discrete MDP called Cliff Walking. This MDP is adapted from Example 6.6 from Sutton and Barto (1998)<d-cite key="sutton1998reinforcement"></d-cite> and requires the agent to navigate from a random start to the goal while avoiding falling off a cliff. The state space covers $48$ discrete states in the gridworld and the action space contains $4$ actions: left, right, up, and down. The agents receive a reward of $0$ when staying at the goal, a reward of $-1$ when not reaching the goal, and a reward of $-100$ when stepping into the cliff. We construct the augmented GCMDP by *(1)* normalizing the rewards into $$[0, 1]$$, *(2)* augmenting the state space with the success state $g_+$ and the failure state $g_-$, and *(3)* modifying the reward function as in Eq.$~\ref{eq:aug-transition-prob-measure}$.
@@ -405,10 +397,10 @@ To prevent confounding errors from data collection and speed up learning, we col
 {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking_aug_gcmdp_lc.svg" class="img-fluid rounded" %}
 </div>
 <div class="caption">
-  TODO: learning curves.
+  Q-learning quickly solves Cliff Walking by learning the original MDP, while GCRL and SSP methods struggle to match its performance by learning the augmented GCMDP. We evaluate the success rate of all methods in the original MDP for fair comparisons. 
 </div>
 
-The results in the figure above suggest that Q-learning quickly converges to $100\%$ success rate, while all GCRL (SSP) methods struggle to match its performance. Although CRL and QRL typically estimate a dense success measure or a dense distance function, they still suffer from the high variance in environmental transitions. This observation is consistent with the caveat that solving the augmented GCMDP is not necessarily easier than solving the original MDP, due to high transition variance and challenging exploration. We also observe that GCQL achieves a success rate similar to its variant with HER, indicating that hindsight relabeling might not speed up learning since $g_+$ and $g_-$ are not in the original state space.
+The results in the figure above suggest that Q-learning quickly converges to $100\%$ success rate, while GCRL and SSP methods struggle to match its performance. Although CRL and QRL typically estimate a dense success measure or a dense distance function, they still suffer from the high variance in environmental transitions. This observation is consistent with the caveat that solving the augmented GCMDP is not necessarily easier than solving the original MDP, due to high transition variance and challenging exploration. We also observe that GCQL achieves a success rate similar to its variant with HER, indicating that hindsight relabeling might not speed up learning since $g_+$ and $g_-$ are not in the original state space.
 
 ## Closing remarks
 
