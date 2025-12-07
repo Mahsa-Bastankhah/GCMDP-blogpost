@@ -62,12 +62,9 @@ _styles: >
     display: inline-block; 
     margin-bottom: 1rem; 
   }
-  .caption {
-    text-align: left !important;
-  }
 ---
 
-{% include figure.liquid path="assets/img/2026-04-27-GCMDP/rl-ssp-gcrl.png" class="img-fluid" %}
+{% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/rl-ssp-gcrl.png" class="img-fluid" %}
 
 <!-- # Introduction -->
 
@@ -201,7 +198,7 @@ Therefore, a mild assumption is to assume all policies of interests are proper. 
 As indicated by the goal-conditioned transitinos, the agent will always stay at the desired goals once reach them. Therefore, the optimal behavioral is to reach the goal as quickly as possible. We include an example comparing the optimal behaviors of GCRL and SSP in the figure below.
 
 <div class="row mt-3">
-{% include figure.liquid path="assets/img/2026-04-27-GCMDP/1d-car.png" class="img-fluid rounded" %}
+{% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/1d-car.png" class="img-fluid rounded" %}
 </div>
 <div class="caption">
   Goal-conditioned RL (GCRL) methods aim to not only reach the goal but also stay at the goal as long as possible, while stochastic shortest path (SSP) algorithms are tasked to reach the goal as quickly as possible.
@@ -396,31 +393,93 @@ We next mention some practical caveats of our conversion from a RL problem to a 
 
 ### Caveats
 
-Hindsight relabeling<d-cite key="andrychowicz2017hindsight"></d-cite> is a widely used technique for solving GCRL and SSP problems. This technique builds upon the intuition that learning to reach some close (easy) goals helps the agent reach far away (difficult) goals later, resulting in automatic curriculum learning. However, using GCRL algorithms with highsight relabling to solve our augmented GCMDP might not speed up learning because the augmented states $g_+$ and $g_-$ are not in the original state space.
+Hindsight relabeling<d-cite key="andrychowicz2017hindsight"></d-cite> is a widely used technique for solving GCRL and SSP problems. This technique builds upon the intuition that learning to reach some close (easy) goals helps the agent reach far away (difficult) goals later, resulting in automatic curriculum learning. However, using GCRL algorithms with hindsight relabling to solve our augmented GCMDP might not speed up learning because the augmented states $g_+$ and $g_-$ are not in the original state space.
 
-In practice, solving the GCMDP might not be easier than solving the original MDP directly (e.g., using TD learning methods). The reason are twofolds. First, the main component of our construction is to augment the transition probability measure using the reward function in the original MDP. After augmentation, the rewards go into the stochasticity of the transition, resulting in much higher variance when interacting with the environment. Second, for dense rewards that provide supervision for RL algorithms at each time step, those supervisions have been deferred into the two additional states $g_+$ and $g_-$ (a sparse reward problem), inducing much more challenging exploration.
+In practice, solving the augmented GCMDP might not be easier than solving the original MDP directly (e.g., using TD learning methods). The reason are twofolds. First, the main component of our construction is to augment the transition probability measure using the reward function in the original MDP. After augmentation, the rewards go into the stochasticity of the transition, resulting in much higher variance when interacting with the environment. Second, for dense rewards that provide supervision for RL algorithms at each time step, those supervisions have been deferred into the two additional states $g_+$ and $g_-$ (a sparse reward problem), inducing much more challenging exploration.
 
 ## Does the conversion work in practice?
 
-We conduct experiments in the Riverswim environment, which requires exploration to reach the end of the river (linear chain of states) by choosing to move right at each state. The agent receives a reward of 1.0 in the rightmost state and receives a small distractor reward of 0.005 if it moves left at any other state. To avoid policy initialization bias, we randomize which action moves left vs. right at each state. 
+<div class="row mt-3">
+  <video autoplay loop muted playsinline style="width:100%; border-radius:4px;">
+    <source path="../assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking.mp4" type="video/mp4">
+    Your browser doesn’t support the video tag.
+  </video>
+</div>
+<!-- <div style="display:flex; justify-content:center; gap:1rem; margin:1.5em 0;">
+  <figure style="margin:0; text-align:center; flex:1;">
+    <video autoplay loop muted playsinline style="width:100%; border-radius:4px;">
+      <source src="../assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking.mp4" type="video/mp4">
+      Your browser doesn’t support the video tag.
+    </video>
+  </figure>
+</div> -->
+<div class="caption">
+  Cliff walking involves crossing a gridworld from a random start (stool) to the goal (cookie) while avoiding falling off a cliff.
+</div>
 
-We train SGCRL on an goal-conditioned version of Riverswim augmented with a positive and negative absorbing state with $$\gamma = 0.95$$. The original MDP and augmented GCMDP transition dynamics are shown in Figure 2.
+To study whether we can use GCRL algorithms to solve the augmented GCMDP, we conduct experiments in a canoinical discrete MDP called Cliff Walking. This MDP is adapted from Example 6.6 from Sutton and Barto (1998)<d-cite key="sutton1998reinforcement"></d-cite> and requires the agent to navigate from a random start to the goal while avoiding falling off a cliff. The state space covers $48$ discrete states in the gridworld and the action space contains $4$ actions: left, right, up, and down. The agents receive a reward of $0$ when staying at the goal, a reward of $-1$ when not reaching the goal, and a reward of $-100$ when stepping into the cliff. We construct the augmented GCMDP by *(1)* normalizing the rewards into $$[0, 1]$$, *(2)* augmenting the state space with the success state $g_+$ and the failure state $g_-$, and *(3)* modifying the reward function as in Eq.$~\ref{eq:aug-transition-prob-measure}$.
 
-{% include figure.liquid path="assets/img/2026-04-27-GCMDP/mdp.png" class="img-fluid" %}
-{% include figure.liquid path="assets/img/2026-04-27-GCMDP/gcmdp.png" class="img-fluid" %}
-**Figure 1.** Transition dynamics for original Riverswim MDP with 6 states (top) and augmented GCMDP (bottom). The transition dynamics of the GCMDP are determined by the original dynamics, the discount factor $$\gamma$$, and the reward function.
+We select four different state-of-the-art GCRL (SSP) algorithms to solve the augmented GCMDP, comparing against the standard Q-learning algorighm in the original MDP.
 
-We compare SGCRL to a baseline Deep Q-learning (DQN) and a baseline Proximal Policy Optimization (PPO) agent trained in the standard Riverswim environment (with explicit rewards). For all training performance curves, we plot the success rate of the policy in the augmented environment - the rate at which the agent reaches the positive absorbing goal state. We also plot the mean augmented success rate for an oracle agent that always takes the optimal policy. We find that for shorter river lengths and shorter horizons, DQN converges faster and achieves higher returns than SGCRL. However, as river length and horizon increase, SGCRL achieves similar or higher returns than DQN (Fig. 2). This results suggest that, while SGCRL is not sample efficient for short-horizon exploration tasks, the GC-MDP formulation enables improved exploration in longer-horizon exploration tasks. 
+1. GCRL is the goal-conditioned variant of Q-learning with the indicator reward function $$r_{\text{aug}}(s, g) = \delta(s \mid g) = \mathbb{1}(s = g)$$.
 
-<!-- ![riverswim_results](./riverswim_results.png) -->
-{% include figure.liquid path="assets/img/2026-04-27-GCMDP/riverswim_results.png" class="img-fluid" %}
+2. GCQL w/ HER applies the hindsight relabeling<d-cite key="andrychowicz2017hindsight"></d-cite> on top of GCQL.
 
-**Figure 2.** Success rate of DQN, PPO, SGCRL, and oracle in the augmented GC-MDP. Success rate is averaged over 5 seeds with standard error shown.
+3. CRL<d-cite key="eysenbach2022contrastive"></d-cite> is a representative GCRL algorithm that reframes the modeling of the success measure as a contrastive learning (classification) problem.
+
+4. QRL<d-cite key="wang2023optimal"></d-cite> is a representative SSP algorithm that that finds goal-conditioned shortest distance (a quasimetric) using the triangle inequality. In particular, this method was developed for determinstic MDPs but also works well for stochastic MDPs in practice.
+
+To prevent confounding errors from data collection and speed up learning, we collect a dataset with $$100\text{K}$$ transitions in the original MDP for training Q-learning, and also collect another dataset with $$100\text{K}$$ transitions in the GCMDP for training aforementioned GCRL (SSP) algorithms. For evaluation, we compare the average success rates for reaching the goal in the original MDP over $$100$$ trajectories, reporting means and standard deviations over $4$ random seeds.
+
+<div class="row mt-3">
+{% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking_aug_gcmdp_lc.svg" class="img-fluid rounded" %}
+</div>
+<div class="caption">
+  TODO: learning curves.
+</div>
+
+Results in the figure above suggests that Q-learning quickly converges to $100\%$ success rate, while all GCRL (SSP) methods struggle to match its performance. Although CRL and QRL typically estimates a dense success measure or a dense distance function, they still suffers from the high variance in environemental transitions. This observation is consistent with the caveat that solving the augmented GCMDP is not necessarily easier than solving the original MDP because of high variance in transitions and challenging exploration. We also observe that GCQL achieves a success rate similar to its variant with HER, indicating that hindsight relabeling might not speed up learning since $g_+$ and $g_-$ are not in the original state space.
+
+<details style="background-color: #f4f4f4ff; padding: 15px; border-left: 4px solid #1E88E5; margin: 20px 0;">
+  <summary>Additional online experiments</summary>
+  {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/riverswim_results.png" class="img-fluid" %}
+
+  **Figure 2.** Success rate of DQN, PPO, SGCRL, and oracle in the augmented GCMDP. Success rate is averaged over 5 seeds with standard error shown.
+
+  Additionally, we conduct experiments in the Riverswim environment, which requires exploration to reach the end of the river (linear chain of states) by choosing to move right at each state. The agent receives a reward of 1.0 in the rightmost state and receives a small distractor reward of 0.005 if it moves left at any other state. To avoid policy initialization bias, we randomize which action moves left vs. right at each state. 
+
+  We train SGCRL on an goal-conditioned version of Riverswim augmented with a positive and negative absorbing state with $\gamma = 0.95$. The original MDP and augmented GCMDP transition dynamics are shown in Figure 2.
+
+  <!-- {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/mdp.png" class="img-fluid" %}
+  {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/gcmdp.png" class="img-fluid" %}
+  **Figure 1.** Transition dynamics for original Riverswim MDP with 6 states (top) and augmented GCMDP (bottom). The transition dynamics of the GCMDP are determined by the original dynamics, the discount factor $$\gamma$$, and the reward function. -->
+
+  We compare SGCRL to a baseline Deep Q-learning (DQN) and a baseline Proximal Policy Optimization (PPO) agent trained in the standard Riverswim environment (with explicit rewards). For all training performance curves, we plot the success rate of the policy in the augmented environment - the rate at which the agent reaches the positive absorbing goal state. We also plot the mean augmented success rate for an oracle agent that always takes the optimal policy. We find that for shorter river lengths and shorter horizons, DQN converges faster and achieves higher returns than SGCRL. However, as river length and horizon increase, SGCRL achieves similar or higher returns than DQN (Fig. 2). This results suggest that, while SGCRL is not sample efficient for short-horizon exploration tasks, the GC-MDP formulation enables improved exploration in longer-horizon exploration tasks. 
+</details>
 
 ## Closing remarks
 
+In this blog post, we share new ideas about converting a standard RL problem into a GCRL problem. These ideas are motivated by prior connections between the RL problem and the SSP problem, and complemently bridge all three building blocks.
+
+$$\text{RL} \iff \text{SSP} \iff \text{GCRL}$$
+
+Although our preliminary experiments do not show a positive sign for using GCRL algorithms to solve *any* reward-maximzing RL problems in practice, we believe our constructions are still interesting to the broad community and raise many intriguing directions to research.
+
 ### Open questions
 
+- Prior work has used unique properties for the (determinstic) shortest path problem, such as the triangle inequality<d-cite key="wang2023optimal"></d-cite> and divide-and-conquer strategy<d-cite key="park2025transitive"></d-cite>, to tackle GCRL tasks, resulting in significant improvements. Extending these tools to the stochastic shortest path problem and, eventually, to any RL problems are important steps towards [RL without TD learning](https://bair.berkeley.edu/blog/2025/11/01/rl-without-td-learning/).
+
+- Another key question is how to make our conversions practical? Perhaps there are alternative constructions converting a MDP into a GCMDP that can enable efficient application of modern GCRL algorithms. Perhaps we need to develop powerful GCRL algorithms to harness these conversions.
+
+- Importantly, our conversions also bring up an open-ended question: After all, RL, SSP, and GCRL are different frameworks describing some mechanisms (blinds). So what are the underlying physical rules that actually govern the world (the elephant)?
+
+Answering these questions not only introduces new interpretations to the RL problems, but also motivates the development of efficient and scalable RL algorithms. Taken together, we are excited to see more progress towards general-purpose reinforcement learning agents that can actually understand the world.
+
+<!-- 
+(Chongyi): bring back for the camera-ready version.
 ## Acknowledgements
+
+We thank ... 
+-->
 
 ---
