@@ -394,7 +394,7 @@ We select four different state-of-the-art GCRL (SSP) algorithms to solve the aug
 To prevent confounding errors from data collection and speed up learning, we collect a dataset with $$100\text{K}$$ transitions in the original MDP for training Q-learning, and also collect another dataset with $$100\text{K}$$ transitions in the GCMDP for training the aforementioned GCRL (SSP) algorithms. For evaluation, we compare the average success rates for reaching the goal in the original MDP over $$100$$ trajectories, reporting means and standard deviations over $4$ random seeds.
 
 <div class="row mt-3">
-{% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking_aug_gcmdp_lc.svg" class="img-fluid rounded" %}
+{% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking_aug_gcmdp.svg" class="img-fluid rounded" %}
 </div>
 <div class="caption">
   Q-learning quickly solves Cliff Walking by learning the original MDP, while GCRL and SSP methods struggle to match its performance by learning the augmented GCMDP. We evaluate the success rate of all methods in the original MDP for fair comparisons. 
