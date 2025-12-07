@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: "Learning to maximize rewards via reaching goals"
-description: "TODO(chongyi): revise the abstract. Goal-conditioned reinforcement learning (GCRL) has recently demonstrated remarkable success as an unsupervised framework capable of driving strong exploratory behavior. Because reaching a goal from scratch is often harder than maximizing a dense reward, algorithms that succeed in GCRL implicitly solve a challenging exploration problem. This raises a natural question: can advances in GCRL be leveraged to solve sparse-reward return-maximization problems? In this work, we answer this question affirmatively. We show how to construct, from any reward-maximization MDP, an equivalent goal-conditioned MDP in which the probability of reaching a synthetic absorbing goal state matches the return of the original task."
+description: "Goal-conditioned reinforcement learning learns to reach goals instead of optimizing hand-crafted rewards. Despite its popularity, goal-conditioned reinforcement learning is often categorized as a special reinforcement learning problem by the community. In this post, we aim to build a direct conversion from any reward-maximization reinforcement learning problem to a goal-conditioned reinforcement learning problem, additionally drawing connections with the stochastic shortest path framework. Our conversion provides a new perspective to understand the reinforcement learning problem: <i>maximizing rewards is equivalent to reaching some goals</i>."
 
 date: 2026-04-27
 future: true
@@ -32,11 +32,10 @@ bibliography: 2026-04-27-mdp-to-gcmdp.bib
 #     for hyperlinks within the post to work correctly.
 #   - please use this format rather than manually creating a markdown table of contents.
 toc:
-  - name: Introduction 
-  - name: Problem Formulation
-  - name: Pratical Algorithm
-  - name: Experiment
-
+  - name: Three building blocks
+  - name: Bridging RL and GCRL
+  - name: Does the conversion work in practice?
+  - name: Closing remarks
 
 # Below is an example of injecting additional post-specific styles.
 # This is used in the 'Layouts' section of this post.
@@ -66,27 +65,28 @@ _styles: >
 
 {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/rl-ssp-gcrl.png" class="img-fluid" %}
 
-<!-- # Introduction -->
+Reinforcement learning (RL) has achieved great success in solving many decision-making problems, from outperforming human-level control on challenging games<d-cite key="silver2018general"></d-cite> and fine-tuning large language models<d-cite key="shao2024deepseekmath"></d-cite> to learning scalable robotic manipulation policies<d-cite key="amin2025pi"></d-cite>. In the standard view, RL is a reward-maximization problem: given a hand-crafted reward function, we search for a policy that maximizes expected return. This perspective is powerful, but it leans heavily on reward design and often obscures alternative ways of thinking about the same underlying control problem.
 
-<!-- Many real-world decision-making problems, from robotic manipulation and autonomous driving to traffic
-routing and healthcare operations, have access to large amounts of unlabeld prior data and require agents
-to reason over hundreds or thousands of steps. Standard reinforcement learning (RL) methods struggle in
-this setting, as they heavily depend on hand-crafted reward functions and extensive task-specific tuning,
-which can lead to brittle behavior and reward hacking, where agents exploit edge cases in the reward at
-the expense of safety or robustness. -->
+If you talk to different RL researchers, the same problem might be described in three languages. One focuses on standard RL and maximizing discounted return. Another uses the stochastic shortest path (SSP) view, emphasizing the cost of reaching a terminal state<d-cite key="bertsekas1991analysis,bertsekas1996neuro,kolobov2012planning"></d-cite>. A third prefers goal-conditioned RL (GCRL), where the agent is explicitly tasked to reach specified goals<d-cite key="kaelbling1993learning,schaul2015universal"></d-cite>. These three framings sound different, but they are closely related: RL emphasizes long-horizon reward accumulation, SSP emphasizes termination with minimal cost, and GCRL emphasizes reaching desired goals.
 
+Two sides of this triangle are already well understood. Prior work shows that any RL problem can be converted into an equivalent SSP problem<d-cite key="bertsekas1991analysis,bertsekas1996neuro,kolobov2012planning"></d-cite>. At the same time, recent GCRL methods demonstrate that simply "learning to reach goals" can drive strong exploration and skill acquisition, even with very sparse rewards<d-cite key="liu2025a,bastankhah2025"></d-cite>. This naturally leads to a question:
 
-<span style="color:red; font-weight:bold">TODO(Chongyi): we need to revise the introduction to motivate the figure.</span>
+<p align="center"><i>Can we systematically turn any reward-maximization problem into a GCRL problem and, in doing so, expose it to the tools and intuitions developed for GCRL and SSP?</i></p>
 
-Reinforcement learning (RL) has achieved great success in solving many decision-making problems, from outperforming human-level control on challenging games<d-cite key="silver2018general"></d-cite> and fine-tuning large language models<d-cite key="shao2024deepseekmath"></d-cite> to learning scalable robotic manipulation policies<d-cite key="amin2025pi"></d-cite> Goal-conditioned reinforcement learning (GCRL) is an important type of reinforcement learning (RL) problems, which prevents  hand-crafted reward functions. Instead, GCRL algorithms learn to reach different goals specified by the environment<d-cite key="kaelbling1993learning,schaul2015universal"></d-cite>.
-<!-- Goal-conditioned reinforcement learning (GCRL) is a framework where agents learn to reach specified goal states <d-cite key="eysenbach2022contrastive"></d-cite>.  -->
+In this post, we answer this question by constructing, from any reward-maximization Markov decision process (MDP), an equivalent goal-conditioned MDP (GCMDP). Our construction augments the original MDP with two absorbing states and pushes the reward function into the transition dynamics. We show that, under this construction, maximizing discounted return in the original MDP is exactly equivalent to maximizing the probability of reaching one of the absorbing states in the augmented GCMDP. Combined with the known RL–SSP equivalence, this yields a clean relationship.
+
+$$
+\text{RL} \iff \text{SSP} \iff \text{GCRL}
+$$
+
+<!-- Reinforcement learning (RL) has achieved great success in solving many decision-making problems, from outperforming human-level control on challenging games<d-cite key="silver2018general"></d-cite> and fine-tuning large language models<d-cite key="shao2024deepseekmath"></d-cite> to learning scalable robotic manipulation policies<d-cite key="amin2025pi"></d-cite>. Goal-conditioned reinforcement learning (GCRL) is an important type of reinforcement learning (RL) problem that prevents hand-crafted reward functions. Instead, GCRL algorithms learn to reach different goals specified by the environment<d-cite key="kaelbling1993learning,schaul2015universal"></d-cite>.
 While the sparse reward structure of this task might seem to hinder exploration, recent work has demonstrated a surprising finding: contrastive RL algorithms that train with only a single challenging downstream goal—rather than a distribution of goals or using any intrinsic shaped reward—can effectively explore the environment and acquire useful skills without any supervision <d-cite key="liu2025a,bastankhah2025"></d-cite>. This raises a natural question: can we leverage the exploration advantages of GCRL to solve standard reward maximization problems?
 
-In this work, we provide a positive answer by showing how any reward maximization MDP can be converted into an equivalent goal-conditioned MDP. Our construction augments the original MDP with synthetic absorbing states, where reaching the "success" absorbing state corresponds exactly to maximizing the expected return in the original problem. This equivalence enables practitioners to apply goal-conditioned RL algorithms to traditional reward maximization tasks, potentially benefiting from the superior exploration properties of GCRL methods.
+In this work, we provide a positive answer by showing how any reward maximization MDP can be converted into an equivalent goal-conditioned MDP. Our construction augments the original MDP with synthetic absorbing states, where reaching the "success" absorbing state corresponds exactly to maximizing the expected return in the original problem. This equivalence enables practitioners to apply goal-conditioned RL algorithms to traditional reward maximization tasks, potentially benefiting from the superior exploration properties of GCRL methods. -->
 
 ## Three building blocks
 
-We consider a Markov decision process (MDP)<d-cite key="sutton1998reinforcement"></d-cite> $$\mathcal{M} = (\mathcal{S}, \mathcal{A}, p, r, p_0, \gamma)$$ defined by a state space $$\mathcal{S}$$, an action space $$\mathcal{A}$$, a transition probability measure $$p: \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$$, a reward function $$r: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$$, an initial state probability measure $$p_0 \in \Delta(\mathcal{S})$$, and a discount factor $$\gamma \in [0, 1)$$, where $$\Delta(\cdot)$$ denotes the set of all possible probability measures over a space. We use $$t$$ to denote the time step in MDP. With slight abuse of notation, we use probability measure to denote the probability mass in discrete MDPs and denote the probability density in continuous MDPs.
+We consider a Markov decision process <d-cite key="sutton1998reinforcement"></d-cite> $$\mathcal{M} = (\mathcal{S}, \mathcal{A}, p, r, p_0, \gamma)$$ defined by a state space $$\mathcal{S}$$, an action space $$\mathcal{A}$$, a transition probability measure $$p: \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$$, a reward function $$r: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$$, an initial state probability measure $$p_0 \in \Delta(\mathcal{S})$$, and a discount factor $$\gamma \in [0, 1)$$, where $$\Delta(\cdot)$$ denotes the set of all possible probability measures over a space. We use $$t$$ to denote the time step in MDP. With slight abuse of notation, we use the probability measure to denote the probability mass in discrete MDPs and denote the probability density in continuous MDPs.
 
 <!-- We use $$t$$ to denote the time step in MDP and assume the reward function only depends on the state without loss of generality<d-cite key="thakoor2022generalised,ghosh2023reinforcement,frans2024unsupervised"></d-cite>. -->
 
@@ -114,7 +114,7 @@ $$
 $$
 
 where $$\tau$$ is a trajectory sampled by the policy $$\pi$$. Alternatively, we can swap the discounted sum over rewards into a discounted sum over states and use it to describe the expected discounted return. Namely, the discounted sum over states is called *the discounted state occupancy measure*<d-cite key="touati2021learning,janner2020gamma,eysenbach2022contrastive,zheng2023contrastive"></d-cite>, i.e., the *successor measures*<d-cite key="dayan1993improving,barreto2017successor"></d-cite>,
-<!-- We can interpret the expected discounted return as first sampling trajectories from the distribution over state squences and then summing *the discounted rewards* over different sequences. Since the reward function is time-invariant, we can instead swap the summation over rewards into a summation over the distribution of state sequences, reinterpreting the expected discounted return as first sampling future state from *the discounted distribution over states* and then evaluate the reward at that state. Prior work defined the discounted distribution over states as the discounted state occupancy measure<d-cite key="touati2021learning,janner2020gamma,eysenbach2022contrastive,zheng2023contrastive"></d-cite>, i.e., the successor measures<d-cite key="dayan1993improving,barreto2017successor"></d-cite>, -->
+<!-- We can interpret the expected discounted return as first sampling trajectories from the distribution over state sequences and then summing *the discounted rewards* over different sequences. Since the reward function is time-invariant, we can instead swap the summation over rewards into a summation over the distribution of state sequences, reinterpreting the expected discounted return as first sampling future state from *the discounted distribution over states* and then evaluating the reward at that state. Prior work defined the discounted distribution over states as the discounted state occupancy measure<d-cite key="touati2021learning,janner2020gamma,eysenbach2022contrastive,zheng2023contrastive"></d-cite>, i.e., the successor measures<d-cite key="dayan1993improving,barreto2017successor"></d-cite>, -->
 $$
 \begin{align}
 p_{\gamma}^{\pi}(s) = (1 - \gamma) \sum_{t = 0}^{\infty} \gamma^t p^{\pi}_t(s),
@@ -144,7 +144,7 @@ This alternative definition implies that maximizing the expected discounted retu
 
 ### Goal-conditioned RL
 
-Goal-conditioned RL (GCRL)<d-cite key="kaelbling1993learning,schaul2015universal"></d-cite> is a special problem in RL, where a standard MDP is augmented with a goal space $$\mathcal{G}$$ and the reward function $$r_{\text{GC}}: \mathcal{S} \times \mathcal{G} \to \mathbb{R}$$ is defined using goals $$g \in \mathcal{G}$$ sampled from the goal measure $$p_{\mathcal{G}} \in \Delta(\mathcal{G})$$, i.e., a goal-conditioned MDP (GCMDP) $$\mathcal{M}_{\text{GCRL}} = (\mathcal{S}, \mathcal{A}, \mathcal{G}, p, r _{\text{GC}}, p_0, \gamma, p _{\mathcal{G}} )$$. For the goal space, prior work defined it in various forms. Specifically, the goal space can be the entire state space (e.g., x-y position of the agent or a RGB image)<d-cite key="wang2023optimal,park2024value,nachum2018data,walke2023bridgedata"></d-cite> or a subspace of the state space (e.g., joint positions of a robot arm or x-y positions of a block)<d-cite key="eysenbach2022contrastive,park2025horizon,andrychowicz2017hindsight"></d-cite>. Among the two choices, setting the goal space to be the entire state space, i.e., $$\mathcal{G} = \mathcal{S}$$, is both widely-used and generic. In the following sections, we will construct a special goal space to convert a standard reward-maximzing MDP into a GCMDP, enabling solving general RL problems using GCRL algorithms.
+Goal-conditioned RL<d-cite key="kaelbling1993learning,schaul2015universal"></d-cite> is a special problem in RL, where a standard MDP is augmented with a goal space $$\mathcal{G}$$ and the reward function $$r_{\text{GC}}: \mathcal{S} \times \mathcal{G} \to \mathbb{R}$$ is defined using goals $$g \in \mathcal{G}$$ sampled from the goal measure $$p_{\mathcal{G}} \in \Delta(\mathcal{G})$$, i.e., a goal-conditioned MDP $$\mathcal{M}_{\text{GCRL}} = (\mathcal{S}, \mathcal{A}, \mathcal{G}, p, r _{\text{GC}}, p_0, \gamma, p _{\mathcal{G}} )$$. For the goal space, prior work defined it in various forms. Specifically, the goal space can be the entire state space (e.g., x-y position of the agent or a RGB image)<d-cite key="wang2023optimal,park2024value,nachum2018data,walke2023bridgedata"></d-cite> or a subspace of the state space (e.g., joint positions of a robot arm or x-y positions of a block)<d-cite key="eysenbach2022contrastive,park2025horizon,andrychowicz2017hindsight"></d-cite>. Among the two choices, setting the goal space to be the entire state space, i.e., $$\mathcal{G} = \mathcal{S}$$, is both widely used and generic. In the following sections, we will construct a special goal space to convert a standard reward-maximizing MDP into a GCMDP, enabling solving general RL problems using GCRL algorithms.
 
 Prior work also defined the goal-conditioned reward function in various forms, including a cost for not reaching the goal $$r_{\text{GC}}(s, g) = - \mathbb{1}(s \neq g)$$<d-cite key="wang2023optimal,park2024value"></d-cite> or a delta measure centered at the goal $$r_{\text{GC}}(s, g) = \delta(s \mid g)$$<d-footnote>The delta measure is an indicator function $\delta(s \mid g) = \mathbb{1}(s = g)$ for discrete GCMDPs and a Dirac delta function $\delta(s \mid g) = \delta_{g}(s)$ for continous GCMDPs.</d-footnote><d-cite key="eysenbach2022contrastive,zheng2023contrastive"></d-cite>. If we choose to define the reward function as the delta measure, using Eq.$$~\ref{eq:succ-measure-rl-obj}$$, the GCRL objective for a goal-conditioned policy $$\pi_{\text{GC}}: \mathcal{S} \times \mathcal{G} \to \Delta(\mathcal{A})$$ can be written as
 
@@ -155,19 +155,19 @@ $$
 \end{align}
 $$
 
-Intuitively, this objective indicates that solving GCRL problem is equivalent to finding the goal-conditioned policy that maximizes the probability measure of reaching desired goals when commanded towards those goals. Note that GCRL problem is also equivalent to a multi-task RL problem<d-cite key="wilson2007multi,yu2020meta,teh2017distral"></d-cite>, where tasks correspond to reaching different goals.
+Intuitively, this objective indicates that solving GCRL is equivalent to finding the goal-conditioned policy that maximizes the probability measure of reaching desired goals when commanded towards those goals. Note that the GCRL problem is also equivalent to a multi-task RL problem<d-cite key="wilson2007multi,yu2020meta,teh2017distral"></d-cite>, where tasks correspond to reaching different goals.
 
 Until now, we have not discussed what happens after the agent reaches the goal. Since GCRL problems typically has infinite horizons and the agent can still move after reaching the goal, the optimal behavior is not only reaching the goal but also staying at the goal as long as possible. We next discuss a special type of GCMDP that simplifies agents' behaviors after reaching the goal, namely, the stochastic shortest path problem.
 
 ### Stochastic shortest path
 
-The stochastic shortest path (SSP) problem<d-cite key="bertsekas1991analysis,bertsekas1996neuro"></d-cite> $$\mathcal{M}_{\text{SSP}} = (\mathcal{S}, \mathcal{A}, \mathcal{G}, p_\text{SSP}, r_{\text{SSP}}, p_0, p_{\mathcal{G}} )$$ is built on top of the GCRL problem, where the environment will terminate the episode once the agent reaches the goal. Many prior GCRL methods actually underpin the underlying algorithm using a SSP problem, and invoke intriguing tools such as a constant cost<d-cite key="park2024ogbench"></d-cite> or the triangle inequality (quasimetric)<d-cite key="wang2023optimal,myers2024learning,park2025transitive"></d-cite> to solve the problem. Since the SSP focuses on agents' behavior before termination, it requires the policy hitting the goal eventually, i.e., a proper policy. 
+The stochastic shortest path problem<d-cite key="bertsekas1991analysis,bertsekas1996neuro"></d-cite> $$\mathcal{M}_{\text{SSP}} = (\mathcal{S}, \mathcal{A}, \mathcal{G}, p_\text{SSP}, r_{\text{SSP}}, p_0, p_{\mathcal{G}} )$$ is built on top of the GCRL problem, where the environment will terminate the episode once the agent reaches the goal. Many prior GCRL methods actually underpin the underlying algorithm using an SSP problem, and invoke intriguing tools such as a constant cost<d-cite key="park2024ogbench"></d-cite> or the triangle inequality (quasimetric)<d-cite key="wang2023optimal,myers2024learning,park2025transitive"></d-cite> to solve the problem. Since the SSP focuses on agents' behavior before termination, it requires the policy to hit the goal eventually, i.e., a proper policy. 
 
 <p align="left"><strong>Definition 1. </strong><i>Given a goal $g \in \mathcal{G}$, a SSP policy $\pi_{\text{SSP}}: \mathcal{S} \times \mathcal{G} \to \Delta(\mathcal{A})$ is proper, if there exists a finite time step $t < \infty$ such that the policy reaches the goal $g$ when commanded towards the same goal $g$, i.e., $p^{\pi_{\text{SSP}}}_t(g \mid g) > 0$.</i></p>
 
-Formally, a SSP policy is *proper* if it will reach the goal with a finite number of time step:
+Formally, an SSP policy is *proper* if it will reach the goal with a finite number of time steps:
 
-Therefore, a mild assumption is to assume all policies of interests are proper. Using the definition of a proper policy, the SSP problem can be adapted from a GCRL problem with the following modifications:
+Therefore, a mild assumption is to assume all policies of interest are proper. Using the definition of a proper policy, the SSP problem can be adapted from a GCRL problem with the following modifications:
 
 1. A negative cost for not reaching the goal, e.g., $$r_{\text{SSP}}(s, g) = - \mathbb{1}(s \neq g)$$.
 
@@ -195,7 +195,7 @@ Therefore, a mild assumption is to assume all policies of interests are proper. 
 
     This objective is finite because of the proper policy assumption.
 
-As indicated by the goal-conditioned transitinos, the agent will always stay at the desired goals once reach them. Therefore, the optimal behavioral is to reach the goal as quickly as possible. We include an example comparing the optimal behaviors of GCRL and SSP in the figure below.
+As indicated by the goal-conditioned transitions, the agent will always stay at the desired goals once it reaches them. Therefore, the optimal behavior is to reach the goal as quickly as possible. We include an example comparing the optimal behaviors of GCRL and SSP in the figure below.
 
 <div class="row mt-3">
 {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/1d-car.png" class="img-fluid rounded" %}
@@ -205,7 +205,7 @@ As indicated by the goal-conditioned transitinos, the agent will always stay at 
 </div>
 
 <span style="color: #e56a1eff;">
-Prior work has already showns that (See Sec. 2.3 of Bertsekas and Tsitsiklis (1996)<d-cite key="bertsekas1996neuro"></d-cite> or Theorem 2.21 of Mausam and Kolobov (2012)<d-cite key="kolobov2012planning"></d-cite>) any infinite horizon RL problem can be converted into a SSP problem. </span>This appealing connection between RL and SSP raises the question:
+Prior work has already shown that (See Sec. 2.3 of Bertsekas and Tsitsiklis (1996)<d-cite key="bertsekas1996neuro"></d-cite> or Theorem 2.21 of Mausam and Kolobov (2012)<d-cite key="kolobov2012planning"></d-cite>) any infinite horizon RL problem can be converted into an SSP problem. </span>This appealing connection between RL and SSP raises the question:
 
 <p align="center"><i>Can we convert any RL problem into a GCRL problem?</i></p>
 
@@ -213,9 +213,9 @@ We will construct a conversion next.
 
 ## Bridging RL and GCRL
 
-The goal of our construction is to preserve policy optimality: the optimal policy in a standard MDP $$\mathcal{M} = (\mathcal{S}, \mathcal{A}, p, r, p_0, \gamma)$$ is equivalent to the optimal the optimal goal-conditioned policy for reaching some goal in the resulting GCMDP. We start the constructin by augmenting the state space and the transition probability measure.
+The goal of our construction is to preserve policy optimality: the optimal policy in a standard MDP $$\mathcal{M} = (\mathcal{S}, \mathcal{A}, p, r, p_0, \gamma)$$ is equivalent to the optimal goal-conditioned policy for reaching some goal in the resulting GCMDP. We start the construction by augmenting the state space and the transition probability measure.
 
-1. The augmented state space additionally include two terminal states, a success state $$g_+$$ and a failure state $$g_-$$: $$\mathcal{S}_{\text{aug}} = \mathcal{S} \cup \{ g_+, g_- \}$$.
+1. The augmented state space additionally includes two terminal states, a success state $$g_+$$ and a failure state $$g_-$$: $$\mathcal{S}_{\text{aug}} = \mathcal{S} \cup \{ g_+, g_- \}$$.
 
 2. The augmented probability measures of transiting into states in the original state space are proportional to the discout factor; The augmented probability measures of transiting into the two terminal states are proportional to the reward in the original MDP: for any state $$s \in \mathcal{S}_{\text{aug}}$$, action $$a \in \mathcal{A}$$, and next state $$s' \in \mathcal{S}_{\text{aug}}$$, 
   
@@ -252,39 +252,9 @@ These augmentations allow us to define the goal state as a singleton $$\mathcal{
 
 Fortunately, the answer is **YES** and we provide a formal proof below.
 
-<!-- We construct a new GC-MDP $$\widetilde{\mathcal{M}} = (\widetilde{\mathcal{S}}, \mathcal{A}, \tilde{p}, \tilde{r}, \rho_0, \tilde{\gamma})$$ such that maximizing the probability of reaching a single absorbing state $$s^+$$ corresponds exactly to maximizing expected return in the original MDP. The state space augments the original MDP with two additional absorbing states:
-
-$$
-\widetilde{\mathcal{S}} = \mathcal{S} \cup \{s^+, s^-\},
-$$
-
-where $$s^+$$ represents a successful terminal state and $$s^-$$ represents a failure terminal state. Both states are absorbing, meaning that once the agent reaches either state, it remains there indefinitely.
-
-For all $$s \in \mathcal{S}$$:
-
-$$
-\tilde{p}(s' \mid s,a)
-=
-\begin{cases}
-s^+, &\text{with probability } (1-\alpha)\, r(s) \\
-s^-, &\text{with probability } (1-\alpha)\, (1-r(s)) \\
-p(s'|s,a), &\text{with probability } \alpha
-\end{cases}
-$$
-
-Where $$\alpha \in (0, 1)$$
-Absorbing states satisfy:
-
-$$
-\tilde{p}(s'|s^+,a)=\mathbf{1}(s'=s^+), \\
-\tilde{p}(s'|s^-,a)=\mathbf{1}(s'=s^-).
-$$
-
-At each time step, with probability $$\alpha$$ the agent follows the original dynamics, and with probability $$1-\alpha$$ the episode terminates by jumping to either $$s^+$$ or $$s^-$$. -->
-
 ### Harnessing the policy optimality
 
-We start by examing the the GCRL objective of the augmented GCMDP. Given that the augmented reward function is a delta measure $$r_\text{aug}(s, g) = \delta(s \mid g)$$ and the goal space only contains $$g_+$$, the GCRL objective of the augmented GCMDP (Eq.$$~\ref{eq:gcrl-obj}$$) for the goal-conditioned policy $$\pi_{\text{aug}}(a \mid s, g)$$ reduces to 
+We start by examining the GCRL objective of the augmented GCMDP. Given that the augmented reward function is a delta measure $$r_\text{aug}(s, g) = \delta(s \mid g)$$ and the goal space only contains $$g_+$$, the GCRL objective of the augmented GCMDP (Eq.$$~\ref{eq:gcrl-obj}$$) for the goal-conditioned policy $$\pi_{\text{aug}}(a \mid s, g)$$ reduces to 
 
 $$
 \begin{align}
@@ -292,7 +262,7 @@ J_{\text{GCRL}}(\pi_{\text{aug}}) = \mathbb{E}_{g \sim \delta(g \mid g_+)}[p^{\p
 \end{align}
 $$
 
-which is the success measure of reaching the singe success state<d-cite key="liu2025a,bastankhah2025"></d-cite> under the goal-condiitoned policy. To simplify notations, we denote the goal-conditioned policy and the GCRL objective as $\pi_{\text{aug}}(a \mid s) \triangleq \pi_{\text{aug}}(a \mid s, g_+)$ and $$p^{\pi_{\text{aug}}}_{\gamma_{\text{aug}}}(g_+) \triangleq p^{\pi_{\text{aug}}}_{\gamma_{\text{aug}}}( g_+ \mid g_+)$$.
+which is the success measure of reaching the single success state<d-cite key="liu2025a,bastankhah2025"></d-cite> under the goal-conditioned policy. To simplify notations, we denote the goal-conditioned policy and the GCRL objective as $\pi_{\text{aug}}(a \mid s) \triangleq \pi_{\text{aug}}(a \mid s, g_+)$ and $$p^{\pi_{\text{aug}}}_{\gamma_{\text{aug}}}(g_+) \triangleq p^{\pi_{\text{aug}}}_{\gamma_{\text{aug}}}( g_+ \mid g_+)$$.
 
 We are now ready to prove that the optimal goal-conditioned policy $$\pi_{\text{aug}}^{\star}$$ in the augmented GCMDP corresponds to the optimal policy $$\pi^{\star}$$ in the original MDP. The main idea is to relate the GCRL objective to the RL objective, showing that they are equivalent to each other. We will first introduce the hitting time and then use it to compute the successor measure. 
 
@@ -304,7 +274,7 @@ H^{\pi_{\text{aug}}}(s) = \inf \left\{ h \in \mathbb{N}: s_h = s \text{ followin
 \end{align}
 </p>
 
-We can relate the probability mass of hitting time of the success state $g_+$ to the success measure in the original MDP.
+We can relate the probability mass of the hitting time of the success state $g_+$ to the success measure in the original MDP.
 
 <p align="left" id="lemma:hitting-time-prob-mass"><strong>Lemma 1. </strong>
 <i>
@@ -346,7 +316,7 @@ Eventually, using this lemma, we can compute the successor measure of the goal-c
 
 <p align="left" id="thm:"><strong>Theorem 1. </strong>
 <i>
-The successor measure of the goal-conditoned policy $\pi_{\text{aug}}$ at the success state $g_+$ in the augmented GCMDP is equivalent to the RL objective in the original MDP, i.e.,
+The successor measure of the goal-conditioned policy $\pi_{\text{aug}}$ at the success state $g_+$ in the augmented GCMDP is equivalent to the RL objective in the original MDP, i.e.,
 
 \begin{align}
 p^{\pi_{\text{aug}}}_{\gamma_{\text{aug}}}(g_+) = J_{\text{GCRL}}(\pi_{\text{aug}}) = \frac{(1 - \gamma) \gamma_{\text{aug}} }{1 - \gamma \gamma_{\text{aug}}} J_{\gamma \gamma_{\text{aug}}}(\pi_{\text{aug}}).
@@ -389,13 +359,13 @@ Therefore, when $\gamma_{\text{aug}} = 1$, the augmented GCMDP preserves policy 
 <strong style="color: #e56a1eff;">Remark.</strong> When setting $$\gamma_{\text{aug}} = 1$$, one intriguing observation is that the augmented GCMDP is also equivalent to a SSP problem.
 </span>
 
-We next mention some practical caveats of our conversion from a RL problem to a GCRL problem.
+We next mention some practical caveats of our conversion from an RL problem to a GCRL problem.
 
 ### Caveats
 
-Hindsight relabeling<d-cite key="andrychowicz2017hindsight"></d-cite> is a widely used technique for solving GCRL and SSP problems. This technique builds upon the intuition that learning to reach some close (easy) goals helps the agent reach far away (difficult) goals later, resulting in automatic curriculum learning. However, using GCRL algorithms with hindsight relabling to solve our augmented GCMDP might not speed up learning because the augmented states $g_+$ and $g_-$ are not in the original state space.
+Hindsight relabeling<d-cite key="andrychowicz2017hindsight"></d-cite> is a widely used technique for solving GCRL and SSP problems. This technique builds upon the intuition that learning to reach some close (easy) goals helps the agent reach far away (difficult) goals later, resulting in automatic curriculum learning. However, using GCRL algorithms with hindsight relabeling to solve our augmented GCMDP might not speed up learning because the augmented states $g_+$ and $g_-$ are not in the original state space.
 
-In practice, solving the augmented GCMDP might not be easier than solving the original MDP directly (e.g., using TD learning methods). The reason are twofolds. First, the main component of our construction is to augment the transition probability measure using the reward function in the original MDP. After augmentation, the rewards go into the stochasticity of the transition, resulting in much higher variance when interacting with the environment. Second, for dense rewards that provide supervision for RL algorithms at each time step, those supervisions have been deferred into the two additional states $g_+$ and $g_-$ (a sparse reward problem), inducing much more challenging exploration.
+In practice, solving the augmented GCMDP might not be easier than solving the original MDP directly (e.g., using TD learning methods). The reasons are twofold. First, the main component of our construction is to augment the transition probability measure using the reward function in the original MDP. After augmentation, the rewards go into the stochasticity of the transition, resulting in much higher variance when interacting with the environment. Second, for dense rewards that provide supervision for RL algorithms at each time step, those supervisions have been deferred into the two additional states $g_+$ and $g_-$ (a sparse reward problem), inducing much more challenging exploration.
 
 ## Does the conversion work in practice?
 
@@ -417,9 +387,9 @@ In practice, solving the augmented GCMDP might not be easier than solving the or
   Cliff walking involves crossing a gridworld from a random start (stool) to the goal (cookie) while avoiding falling off a cliff.
 </div>
 
-To study whether we can use GCRL algorithms to solve the augmented GCMDP, we conduct experiments in a canoinical discrete MDP called Cliff Walking. This MDP is adapted from Example 6.6 from Sutton and Barto (1998)<d-cite key="sutton1998reinforcement"></d-cite> and requires the agent to navigate from a random start to the goal while avoiding falling off a cliff. The state space covers $48$ discrete states in the gridworld and the action space contains $4$ actions: left, right, up, and down. The agents receive a reward of $0$ when staying at the goal, a reward of $-1$ when not reaching the goal, and a reward of $-100$ when stepping into the cliff. We construct the augmented GCMDP by *(1)* normalizing the rewards into $$[0, 1]$$, *(2)* augmenting the state space with the success state $g_+$ and the failure state $g_-$, and *(3)* modifying the reward function as in Eq.$~\ref{eq:aug-transition-prob-measure}$.
+To study whether we can use GCRL algorithms to solve the augmented GCMDP, we conduct experiments in a canonical discrete MDP called Cliff Walking. This MDP is adapted from Example 6.6 from Sutton and Barto (1998)<d-cite key="sutton1998reinforcement"></d-cite> and requires the agent to navigate from a random start to the goal while avoiding falling off a cliff. The state space covers $48$ discrete states in the gridworld and the action space contains $4$ actions: left, right, up, and down. The agents receive a reward of $0$ when staying at the goal, a reward of $-1$ when not reaching the goal, and a reward of $-100$ when stepping into the cliff. We construct the augmented GCMDP by *(1)* normalizing the rewards into $$[0, 1]$$, *(2)* augmenting the state space with the success state $g_+$ and the failure state $g_-$, and *(3)* modifying the reward function as in Eq.$~\ref{eq:aug-transition-prob-measure}$.
 
-We select four different state-of-the-art GCRL (SSP) algorithms to solve the augmented GCMDP, comparing against the standard Q-learning algorighm in the original MDP.
+We select four different state-of-the-art GCRL (SSP) algorithms to solve the augmented GCMDP, comparing against the standard Q-learning algorithm in the original MDP.
 
 1. GCRL is the goal-conditioned variant of Q-learning with the indicator reward function $$r_{\text{aug}}(s, g) = \delta(s \mid g) = \mathbb{1}(s = g)$$.
 
@@ -427,9 +397,9 @@ We select four different state-of-the-art GCRL (SSP) algorithms to solve the aug
 
 3. CRL<d-cite key="eysenbach2022contrastive"></d-cite> is a representative GCRL algorithm that reframes the modeling of the success measure as a contrastive learning (classification) problem.
 
-4. QRL<d-cite key="wang2023optimal"></d-cite> is a representative SSP algorithm that that finds goal-conditioned shortest distance (a quasimetric) using the triangle inequality. In particular, this method was developed for determinstic MDPs but also works well for stochastic MDPs in practice.
+4. QRL<d-cite key="wang2023optimal"></d-cite> is a representative SSP algorithm that finds goal-conditioned shortest distance (a quasimetric) using the triangle inequality. In particular, this method was developed for deterministic MDPs but also works well for stochastic MDPs in practice.
 
-To prevent confounding errors from data collection and speed up learning, we collect a dataset with $$100\text{K}$$ transitions in the original MDP for training Q-learning, and also collect another dataset with $$100\text{K}$$ transitions in the GCMDP for training aforementioned GCRL (SSP) algorithms. For evaluation, we compare the average success rates for reaching the goal in the original MDP over $$100$$ trajectories, reporting means and standard deviations over $4$ random seeds.
+To prevent confounding errors from data collection and speed up learning, we collect a dataset with $$100\text{K}$$ transitions in the original MDP for training Q-learning, and also collect another dataset with $$100\text{K}$$ transitions in the GCMDP for training the aforementioned GCRL (SSP) algorithms. For evaluation, we compare the average success rates for reaching the goal in the original MDP over $$100$$ trajectories, reporting means and standard deviations over $4$ random seeds.
 
 <div class="row mt-3">
 {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking_aug_gcmdp_lc.svg" class="img-fluid rounded" %}
@@ -438,42 +408,21 @@ To prevent confounding errors from data collection and speed up learning, we col
   TODO: learning curves.
 </div>
 
-Results in the figure above suggests that Q-learning quickly converges to $100\%$ success rate, while all GCRL (SSP) methods struggle to match its performance. Although CRL and QRL typically estimates a dense success measure or a dense distance function, they still suffers from the high variance in environemental transitions. This observation is consistent with the caveat that solving the augmented GCMDP is not necessarily easier than solving the original MDP because of high variance in transitions and challenging exploration. We also observe that GCQL achieves a success rate similar to its variant with HER, indicating that hindsight relabeling might not speed up learning since $g_+$ and $g_-$ are not in the original state space.
-
-<details style="background-color: #f4f4f4ff; padding: 15px; border-left: 4px solid #1E88E5; margin: 20px 0;">
-  <summary>Additional online experiments</summary>
-  {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/riverswim_results.png" class="img-fluid" %}
-
-  **Figure 2.** Success rate of DQN, PPO, SGCRL, and oracle in the augmented GCMDP. Success rate is averaged over 5 seeds with standard error shown.
-
-  Additionally, we conduct experiments in the Riverswim environment, which requires exploration to reach the end of the river (linear chain of states) by choosing to move right at each state. The agent receives a reward of 1.0 in the rightmost state and receives a small distractor reward of 0.005 if it moves left at any other state. To avoid policy initialization bias, we randomize which action moves left vs. right at each state. 
-
-  We train SGCRL on an goal-conditioned version of Riverswim augmented with a positive and negative absorbing state with $\gamma = 0.95$. The original MDP and augmented GCMDP transition dynamics are shown in Figure 2.
-
-  <!-- {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/mdp.png" class="img-fluid" %}
-  {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/gcmdp.png" class="img-fluid" %}
-  **Figure 1.** Transition dynamics for original Riverswim MDP with 6 states (top) and augmented GCMDP (bottom). The transition dynamics of the GCMDP are determined by the original dynamics, the discount factor $$\gamma$$, and the reward function. -->
-
-  We compare SGCRL to a baseline Deep Q-learning (DQN) and a baseline Proximal Policy Optimization (PPO) agent trained in the standard Riverswim environment (with explicit rewards). For all training performance curves, we plot the success rate of the policy in the augmented environment - the rate at which the agent reaches the positive absorbing goal state. We also plot the mean augmented success rate for an oracle agent that always takes the optimal policy. We find that for shorter river lengths and shorter horizons, DQN converges faster and achieves higher returns than SGCRL. However, as river length and horizon increase, SGCRL achieves similar or higher returns than DQN (Fig. 2). This results suggest that, while SGCRL is not sample efficient for short-horizon exploration tasks, the GC-MDP formulation enables improved exploration in longer-horizon exploration tasks. 
-</details>
+The results in the figure above suggest that Q-learning quickly converges to $100\%$ success rate, while all GCRL (SSP) methods struggle to match its performance. Although CRL and QRL typically estimate a dense success measure or a dense distance function, they still suffer from the high variance in environmental transitions. This observation is consistent with the caveat that solving the augmented GCMDP is not necessarily easier than solving the original MDP, due to high transition variance and challenging exploration. We also observe that GCQL achieves a success rate similar to its variant with HER, indicating that hindsight relabeling might not speed up learning since $g_+$ and $g_-$ are not in the original state space.
 
 ## Closing remarks
 
-In this blog post, we share new ideas about converting a standard RL problem into a GCRL problem. These ideas are motivated by prior connections between the RL problem and the SSP problem, and complemently bridge all three building blocks.
-
-$$\text{RL} \iff \text{SSP} \iff \text{GCRL}$$
-
-Although our preliminary experiments do not show a positive sign for using GCRL algorithms to solve *any* reward-maximzing RL problems in practice, we believe our constructions are still interesting to the broad community and raise many intriguing directions to research.
+In this blog post, we share new ideas about converting a standard RL problem into a GCRL problem. These ideas are motivated by prior connections between the RL and the SSP and, in turn, complementarily bridge all three building blocks. Although our preliminary experiments do not show a positive sign for using GCRL algorithms to solve *any* reward-maximization RL problems in practice, we believe our constructions are still of interest to the broader community and raise many intriguing research directions.
 
 ### Open questions
 
-- Prior work has used unique properties for the (determinstic) shortest path problem, such as the triangle inequality<d-cite key="wang2023optimal"></d-cite> and divide-and-conquer strategy<d-cite key="park2025transitive"></d-cite>, to tackle GCRL tasks, resulting in significant improvements. Extending these tools to the stochastic shortest path problem and, eventually, to any RL problems are important steps towards [RL without TD learning](https://bair.berkeley.edu/blog/2025/11/01/rl-without-td-learning/).
+- Prior work has used unique properties for the (deterministic) shortest path problem, such as the triangle inequality<d-cite key="wang2023optimal"></d-cite> and divide-and-conquer strategy<d-cite key="park2025transitive"></d-cite>, to tackle GCRL tasks, resulting in significant improvements. Extending these tools to the stochastic shortest path problem and, eventually, to any RL problem is an important step towards [RL without TD learning](https://bair.berkeley.edu/blog/2025/11/01/rl-without-td-learning/).
 
-- Another key question is how to make our conversions practical? Perhaps there are alternative constructions converting a MDP into a GCMDP that can enable efficient application of modern GCRL algorithms. Perhaps we need to develop powerful GCRL algorithms to harness these conversions.
+- Another key question is how to make our conversions practical? Perhaps there are alternative constructions that convert an MDP into a GCMDP, enabling efficient application of modern GCRL algorithms. Perhaps we need to develop powerful GCRL algorithms to harness these conversions.
 
 - Importantly, our conversions also bring up an open-ended question: After all, RL, SSP, and GCRL are different frameworks describing some mechanisms (blinds). So what are the underlying physical rules that actually govern the world (the elephant)?
 
-Answering these questions not only introduces new interpretations to the RL problems, but also motivates the development of efficient and scalable RL algorithms. Taken together, we are excited to see more progress towards general-purpose reinforcement learning agents that can actually understand the world.
+Answering these questions not only introduces new interpretations to the RL problems but also motivates the development of efficient and scalable RL algorithms. Taken together, we are excited to see more progress towards general-purpose reinforcement learning agents that can actually understand the world.
 
 <!-- 
 (Chongyi): bring back for the camera-ready version.
