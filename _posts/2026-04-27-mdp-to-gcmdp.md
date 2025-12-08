@@ -1,6 +1,6 @@
 ---
 layout: distill
-title: "Learning to maximize rewards via reaching goals"
+title: "Learning to Maximize Rewards via Reaching Goals"
 description: "Goal-conditioned reinforcement learning learns to reach goals instead of optimizing hand-crafted rewards. Despite its popularity, the community often categorizes goal-conditioned reinforcement learning as a special case of reinforcement learning. In this post, we aim to build a direct conversion from any reward-maximization reinforcement learning problem to a goal-conditioned reinforcement learning problem, and to draw connections with the stochastic shortest path framework. Our conversion provides a new perspective on the reinforcement learning problem: <i>maximizing rewards is equivalent to reaching some goals</i>."
 
 date: 2026-04-27
@@ -88,20 +88,6 @@ In this work, we provide a positive answer by showing how any reward maximizatio
 
 We consider a Markov decision process <d-cite key="sutton1998reinforcement"></d-cite> $$\mathcal{M} = (\mathcal{S}, \mathcal{A}, p, r, p_0, \gamma)$$ defined by a state space $$\mathcal{S}$$, an action space $$\mathcal{A}$$, a transition probability measure $$p: \mathcal{S} \times \mathcal{A} \to \Delta(\mathcal{S})$$, a reward function $$r: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$$, an initial state probability measure $$p_0 \in \Delta(\mathcal{S})$$, and a discount factor $$\gamma \in [0, 1)$$, where $$\Delta(\cdot)$$ denotes the set of all possible probability measures over a space. We use $$t$$ to denote the time step in MDP. With slight abuse of notation, we use the probability measure to denote the probability mass in discrete MDPs and denote the probability density in continuous MDPs.
 
-<!-- We use $$t$$ to denote the time step in MDP and assume the reward function only depends on the state without loss of generality<d-cite key="thakoor2022generalised,ghosh2023reinforcement,frans2024unsupervised"></d-cite>. -->
-
-<!-- <details style="background-color: #f4f4f4ff; padding: 15px; border-left: 4px solid #1E88E5; margin: 20px 0;">
-  <summary>Discussion on a state-action dependent reward function</summary>
-  For a reward function $$\hat{r}(s)$$ taking values in $$[r_{\min}, r_{\max}]$$, we can apply the min-max normalization to transform the range into $$[0, 1]$$:
-  $$
-  r(s) = \frac{\hat{r}(s) - r_{\min}}{r_{\max} - r_{\min}}.
-  $$
-  For a reward function depending on a state-action pair $$\hat{r}(s, a)$$, we can marginalize over actions using the policy $$\pi$$ to convert it into a state-dependent reward function $$r(s)$$:
-  $$
-  r(s, a) = \mathbb{E}_{a \sim \pi(a \mid s)} \left[ \hat{r}(s, a) \right].
-  $$
-</details> -->
-
 ### RL objectives and successor measures
 
 The goal of RL is to learn a policy $$\pi: \mathcal{S} \to \Delta(\mathcal{A})$$ that maximizes the expected discounted return 
@@ -114,7 +100,7 @@ $$
 $$
 
 where $$\tau$$ is a trajectory sampled by the policy $$\pi$$. Alternatively, we can swap the discounted sum over rewards into a discounted sum over states and use it to describe the expected discounted return. Namely, the discounted sum over states is called *the discounted state occupancy measure*<d-cite key="touati2021learning,janner2020gamma,eysenbach2022contrastive,zheng2023contrastive"></d-cite>, i.e., the *successor measures*<d-cite key="dayan1993improving,barreto2017successor"></d-cite>,
-<!-- We can interpret the expected discounted return as first sampling trajectories from the distribution over state sequences and then summing *the discounted rewards* over different sequences. Since the reward function is time-invariant, we can instead swap the summation over rewards into a summation over the distribution of state sequences, reinterpreting the expected discounted return as first sampling future state from *the discounted distribution over states* and then evaluating the reward at that state. Prior work defined the discounted distribution over states as the discounted state occupancy measure<d-cite key="touati2021learning,janner2020gamma,eysenbach2022contrastive,zheng2023contrastive"></d-cite>, i.e., the successor measures<d-cite key="dayan1993improving,barreto2017successor"></d-cite>, -->
+
 $$
 \begin{align}
 p_{\gamma}^{\pi}(s) = (1 - \gamma) \sum_{t = 0}^{\infty} \gamma^t p^{\pi}_t(s),
@@ -197,7 +183,7 @@ Therefore, a mild assumption is to assume all policies of interest are proper. U
 
 As indicated by the goal-conditioned transitions, the agent will always stay at the desired goals once it reaches them. Therefore, the optimal behavior is to reach the goal as quickly as possible. We include an example comparing the optimal behaviors of GCRL and SSP in the figure below.
 
-<div class="row mt-3">
+<div class="col mt-3">
 {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/1d-car.png" class="img-fluid rounded" %}
 </div>
 <div class="caption">
@@ -369,7 +355,7 @@ In practice, solving the augmented GCMDP might not be easier than solving the or
 
 ## Does the conversion work in practice?
 
-<div class="row mt-3">
+<div class="col mt-3">
   <video autoplay loop muted playsinline class="img-fluid rounded" preload="metadata">
     <source src="{{ 'assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking.mp4' | relative_url }}" type="video/mp4">
     Your browser doesn’t support the video tag.
@@ -381,7 +367,7 @@ In practice, solving the augmented GCMDP might not be easier than solving the or
 
 To study whether we can use GCRL algorithms to solve the augmented GCMDP, we conduct experiments in a canonical discrete MDP called Cliff Walking. This MDP is adapted from Example 6.6 from Sutton and Barto (1998)<d-cite key="sutton1998reinforcement"></d-cite> and requires the agent to navigate from a random start to the goal while avoiding falling off a cliff. The state space covers $48$ discrete states in the gridworld and the action space contains $4$ actions: left, right, up, and down. The agents receive a reward of $0$ when staying at the goal, a reward of $-1$ when not reaching the goal, and a reward of $-100$ when stepping into the cliff. We construct the augmented GCMDP by *(1)* normalizing the rewards into $$[0, 1]$$, *(2)* augmenting the state space with the success state $g_+$ and the failure state $g_-$, and *(3)* modifying the reward function as in Eq.$~\ref{eq:aug-transition-prob-measure}$.
 
-We select four different state-of-the-art GCRL (SSP) algorithms to solve the augmented GCMDP, comparing against the standard Q-learning algorithm in the original MDP.
+We select four different state-of-the-art GCRL and SSP algorithms to solve the augmented GCMDP, comparing against the standard Q-learning algorithm in the original MDP.
 
 1. GCRL is the goal-conditioned variant of Q-learning with the indicator reward function $$r_{\text{aug}}(s, g) = \delta(s \mid g) = \mathbb{1}(s = g)$$.
 
@@ -391,9 +377,9 @@ We select four different state-of-the-art GCRL (SSP) algorithms to solve the aug
 
 4. QRL<d-cite key="wang2023optimal"></d-cite> is a representative SSP algorithm that finds goal-conditioned shortest distance (a quasimetric) using the triangle inequality. In particular, this method was developed for deterministic MDPs but also works well for stochastic MDPs in practice.
 
-To prevent confounding errors from data collection and speed up learning, we collect a dataset with $$100\text{K}$$ transitions in the original MDP for training Q-learning, and also collect another dataset with $$100\text{K}$$ transitions in the GCMDP for training the aforementioned GCRL (SSP) algorithms. For evaluation, we compare the average success rates for reaching the goal in the original MDP over $$100$$ trajectories, reporting means and standard deviations over $4$ random seeds.
+To prevent confounding errors from data collection and speed up learning, we collect a dataset with $$100\text{K}$$ transitions in the original MDP for training Q-learning, and also collect another dataset with $$100\text{K}$$ transitions in the GCMDP for training the aforementioned GCRL and SSP algorithms. For evaluation, we compare the average success rates for reaching the goal in the original MDP over $$100$$ trajectories, reporting means and standard deviations over $4$ random seeds.
 
-<div class="row mt-3">
+<div class="col mt-3">
 {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/cliff_walking_aug_gcmdp.svg" class="img-fluid rounded" %}
 </div>
 <div class="caption">
@@ -401,6 +387,30 @@ To prevent confounding errors from data collection and speed up learning, we col
 </div>
 
 The results in the figure above suggest that Q-learning quickly converges to $100\%$ success rate, while GCRL and SSP methods struggle to match its performance. Although CRL and QRL typically estimate a dense success measure or a dense distance function, they still suffer from the high variance in environmental transitions. This observation is consistent with the caveat that solving the augmented GCMDP is not necessarily easier than solving the original MDP, due to high transition variance and challenging exploration. We also observe that GCQL achieves a success rate similar to its variant with HER, indicating that hindsight relabeling might not speed up learning since $g_+$ and $g_-$ are not in the original state space.
+
+<details style="background-color: #f4f4f4ff; padding: 15px; border-left: 4px solid #1E88E5; margin: 20px 0;">
+  <summary>Additional online experiments</summary>
+
+  <div class="col mt-3">
+      {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/riverswim.svg" class="img-fluid rounded" %}
+  </div>
+  <div class="caption">
+    River Swim involves swimming across a river by choosing to move right at each state. The exploration is challenging due to stochstic transitions.
+  </div>
+
+  Additionally, we conduct experiments in the River Swim MDP<d-cite key="strehl2008analysis"></d-cite>, which requires exploration to reach the end of the river (linear chain of states) by choosing to move right at each state. The agent receives a reward of $1.0$ in the rightmost state and receives a small distractor reward of $0.005$ if it moves left at any other state. To avoid policy initialization bias, we randomize which action moves left versus right at each state. 
+
+  We compare the standard Q-learning and PPO<d-cite key="schulman2017proximal"></d-cite> algorithms in the original MDP against the GCQL in the augmented GCMDP, measuring the success rates in the augmented GCMDP. We also plot the success rate of an oracle agent that always goes right. Results are shown in the figure below.
+  
+  <div class="col mt-3">
+    {% include figure.liquid path="assets/img/2026-04-27-mdp-to-gcmdp/riverswim_results.svg" class="img-fluid rounded" %}
+  </div>
+  <div class="caption">
+    Success rates of GCQL, Q-learning, PPO, and the oracle in the augmented River Swim environment. We show the mean and standard deviations over 5 random seeds. 
+  </div>
+
+  We observe that for shorter river lengths and shorter horizons, Q-learning converges faster and achieves higher returns than GCQL. However, as river length and horizon increase, GCQL achieves similar or higher returns than Q-learning. These results suggest that, while GCQL is not sample efficient for short-horizon exploration tasks, the GCMDP formulation enables improved exploration in longer-horizon exploration tasks.
+</details>
 
 ## Closing remarks
 
@@ -415,12 +425,5 @@ In this blog post, we share new ideas about converting a standard RL problem int
 - Importantly, our conversions also bring up an open-ended question: After all, RL, SSP, and GCRL are different frameworks describing some mechanisms (blinds). So what are the underlying physical rules that actually govern the world (the elephant)?
 
 Answering these questions not only introduces new interpretations to the RL problems but also motivates the development of efficient and scalable RL algorithms. Taken together, we are excited to see more progress towards general-purpose reinforcement learning agents that can actually understand the world.
-
-<!-- 
-(Chongyi): bring back for the camera-ready version.
-## Acknowledgements
-
-We thank ... 
--->
 
 ---
